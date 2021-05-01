@@ -1,5 +1,5 @@
 import { NativeModules } from 'react-native';
-import { KakaoSDK } from './types';
+import { AccessTokenType, KakaoSDK } from './types';
 
 const { RNAKakaoSDK } = NativeModules;
 
@@ -11,16 +11,31 @@ export const isInitialized = async () => {
   return await RNAKakaoSDK.isInitialized();
 };
 
+const dateToSeconds = (str: string): number => {
+  const v = new Date(str?.replace(' ', 'T')).getTime();
+  const n = new Date().getTime();
+  return Math.floor((v - n) / 1000);
+};
 export const login = async () => {
   const result = await RNAKakaoSDK.login();
-  console.log(result);
-  return undefined;
+  return {
+    access_token: result?.accessToken,
+    refresh_token: result?.refreshToken,
+    scopes: result?.scopes,
+    expires_in: dateToSeconds(result?.accessTokenExpiresAt),
+    refresh_token_expires_in: dateToSeconds(result?.refreshTokenExpiresAt),
+  };
 };
 
 export const loginWithNewScopes = async (scopes: string[]) => {
   const result = await RNAKakaoSDK.loginWithNewScopes(scopes);
-  console.log(result);
-  return undefined;
+  return {
+    access_token: result?.accessToken,
+    refresh_token: result?.refreshToken,
+    scopes: result?.scopes,
+    expires_in: dateToSeconds(result?.accessTokenExpiresAt),
+    refresh_token_expires_in: dateToSeconds(result?.refreshTokenExpiresAt),
+  };
 };
 
 export const logout = async () => {
@@ -33,8 +48,13 @@ export const unlink = async () => {
 
 export const getAccessToken = async () => {
   const result = await RNAKakaoSDK.getAccessToken();
-  console.log(result);
-  return undefined;
+  return {
+    access_token: result?.accessToken,
+    refresh_token: result?.refreshToken,
+    scopes: result?.scopes,
+    expires_in: dateToSeconds(result?.accessTokenExpiresAt),
+    refresh_token_expires_in: dateToSeconds(result?.refreshTokenExpiresAt),
+  };
 };
 
 export const getProfile = async () => {

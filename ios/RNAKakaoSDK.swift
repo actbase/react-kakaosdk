@@ -28,15 +28,15 @@ public class RNAKakaoSDK: NSObject {
         return AuthController.handleOpenUrl(url: url)
     }
 
-    public override init() {
-        var appKey: String? = Bundle.main.object(forInfoDictionaryKey: "KAKAO_APP_KEY") as? String
-        KakaoSDKCommon.initSDK(appKey: appKey!)
-    }
-
     func objectToDic<T>(_ value: T) throws -> Any where T: Encodable {
         let json = try JSONEncoder().encode(value)
         let dict = try JSONSerialization.jsonObject(with: json, options: .allowFragments);
         return dict;
+    }
+
+    @objc(init:)
+    func login(_ appKey: String) -> Void {
+        KakaoSDKCommon.initSDK(appKey: appKey)
     }
 
     @objc(login:rejecter:)

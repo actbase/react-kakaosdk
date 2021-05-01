@@ -10,24 +10,20 @@ const getKakaoSDK = (): Promise<any> => {
       return;
     }
 
-    console.log('create KakaoSDK..');
-    var jsapi = document.createElement('script');
+    const jsapi = document.createElement('script');
     jsapi.type = 'text/javascript';
     jsapi.src = 'https://developers.kakao.com/sdk/js/kakao.min.js';
-    var s = document.getElementsByTagName('script')[0];
+    const s = document.getElementsByTagName('script')[0];
     s?.parentNode?.insertBefore(jsapi, s);
-    jsapi.onload = () => {
-      // @ts-ignore
-      resolve(global.Kakao);
-    };
-    jsapi.onerror = reject;
-    jsapi.onabort = reject;
+    // @ts-ignore
+    jsapi.onload = () => resolve(global.Kakao);
+    jsapi.onabort = jsapi.onerror = reject;
   });
 };
 
 export const init = async (appKey: string) => {
-  const Kakao = await getKakaoSDK();
-  if (!Kakao.isInitialized()) Kakao.init(appKey);
+  const kakao = await getKakaoSDK();
+  if (!kakao.isInitialized()) kakao.init(appKey);
 };
 
 export const isInitialized = async () => {
@@ -44,7 +40,7 @@ export const login = async () => {
     expires_in: output?.expires_in,
     refresh_token: output?.refresh_token,
     refresh_token_expires_in: output?.refresh_token_expires_in,
-    scope: output?.scope.split(' '),
+    scopes: output?.scope.split(' '),
     token_type: output.token_type,
   };
 };
@@ -59,7 +55,7 @@ export const loginWithNewScopes = async (scopes: string[]) => {
     expires_in: output?.expires_in,
     refresh_token: output?.refresh_token,
     refresh_token_expires_in: output?.refresh_token_expires_in,
-    scope: output?.scope.split(' '),
+    scopes: output?.scope.split(' '),
     token_type: output.token_type,
   };
 };
@@ -87,7 +83,7 @@ export const getAccessToken = async () => {
     expires_in: output?.expires_in,
     refresh_token: output?.refresh_token,
     refresh_token_expires_in: output?.refresh_token_expires_in,
-    scope: output?.scope.split(' '),
+    scopes: output?.scope.split(' '),
     token_type: output.token_type,
   };
 };
