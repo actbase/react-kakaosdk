@@ -6,6 +6,7 @@ src_modules/
 example/
 docs/
 
+tsconfig.json
 .babelrc.js
 .gitignore
 .npmignore
