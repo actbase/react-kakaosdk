@@ -31,7 +31,7 @@ Xcode에서 프로젝트 내 비어있는 Swift File를 새로 만들고 Headers
 해당 프로젝트 설정을 접근 후 Target에 프로젝트에서
 Build Settings 접근 후 Library Search Path를 검색하면 그 안에 Debug쪽에 있는 부분을 수정해야합니다.
 
-<img src="https://github.com/actbase/react-kakaosdk/raw/master/assets/xcode_0501.png" title="Xcode Settings" float="left">
+<img src="https://github.com/actbase/react-kakaosdk/raw/main/assets/xcode_0501.png" title="Xcode Settings" float="left">
 
 \$(inherited)를 제외한 2개를 삭제 후 저장하고 빌드하면 정상적으로 돌아갑니다.
 
