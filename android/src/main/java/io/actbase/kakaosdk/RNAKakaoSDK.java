@@ -1,25 +1,26 @@
 package io.actbase.kakaosdk;
 
-import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
-import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
+import android.widget.Toast;
 
-import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.kakao.sdk.common.KakaoSdk;
+import com.kakao.sdk.common.model.AuthError;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.Account;
 
@@ -31,43 +32,42 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class RNAKakaoSDK extends ReactContextBaseJavaModule implements ActivityEventListener {
+public class RNAKakaoSDK extends ReactContextBaseJavaModule {
 
   private ReactApplicationContext context;
+  private boolean isInit = false;
 
   public RNAKakaoSDK(ReactApplicationContext context) {
     super(context);
     this.context = context;
+  }
 
+  public String getKeyHash() {
+    String keyHash = null;
+    PackageInfo packageInfo = null;
     try {
-      ApplicationInfo ai = context
-          .getPackageManager()
-          .getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-      Bundle bundle = ai.metaData;
-      KakaoSdk.init(context, bundle.getString("com.kakao.sdk.AppKey"));
-    } catch (Exception e) {
+      packageInfo = context.getPackageManager()
+          .getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES);
+    } catch (PackageManager.NameNotFoundException e) {
       e.printStackTrace();
     }
+
+    for (Signature signature : packageInfo.signatures) {
+      try {
+        MessageDigest md = MessageDigest.getInstance("SHA");
+        md.update(signature.toByteArray());
+        keyHash = Base64.encodeToString(md.digest(), Base64.DEFAULT);
+      } catch (NoSuchAlgorithmException e) {
+        Log.e("KeyHash", "Unable to get MessageDigest. signature=" + signature, e);
+      }
+    }
+
+    return keyHash;
   }
 
   @Override
   public String getName() {
     return "RNAKakaoSDK";
-  }
-
-  @Override
-  public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-    try {
-//            if (KakaoSDK.getAdapter() != null && Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
-//                return;
-//            }
-    } catch (Exception ex) {
-    }
-  }
-
-  @Override
-  public void onNewIntent(Intent intent) {
-
   }
 
   private String format(Date date) {
@@ -84,8 +84,73 @@ public class RNAKakaoSDK extends ReactContextBaseJavaModule implements ActivityE
     UserApiClient.getInstance().loginWithKakaoAccount(context, (token, error) -> {
       try {
         if (error != null) {
-          throw new Exception(error.getMessage());
+          throw error;
         }
+        WritableMap map = Arguments.createMap();
+        map.putString("accessToken", token.getAccessToken());
+        map.putString("refreshToken", token.getRefreshToken());
+        map.putString("accessTokenExpiresAt", format(token.getAccessTokenExpiresAt()));
+        map.putString("refreshTokenExpiresAt", format(token.getRefreshTokenExpiresAt()));
+
+        WritableArray scopes = Arguments.createArray();
+        if (token.getScopes() != null) {
+          for (String scope : token.getScopes()) {
+            scopes.pushString(scope);
+          }
+        }
+        map.putArray("scopes", scopes);
+
+        promise.resolve(map);
+      } catch (Throwable ex) {
+        if (ex instanceof AuthError) {
+          AuthError authError = (AuthError) ex;
+          if (authError.getStatusCode() == 401) {
+            // invalid android_key_hash or ios_bundle_id or web_site_url.
+            try {
+              ClipboardManager clipboard = (ClipboardManager) context
+                  .getSystemService(Context.CLIPBOARD_SERVICE);
+              ClipData clip = ClipData.newPlainText("Android Key Hash", getKeyHash());
+              clipboard.setPrimaryClip(clip);
+              Toast.makeText(context, "Copy to Keyhash (clipboard)", Toast.LENGTH_SHORT).show();
+            } catch (Exception ex2) {
+              ex2.printStackTrace();
+            }
+          }
+          promise.reject(String.valueOf(authError.getStatusCode()), authError.getLocalizedMessage(),
+              ex);
+        } else {
+          ex.printStackTrace();
+          promise.reject(ex);
+        }
+      }
+      return null;
+    });
+  }
+
+  @ReactMethod
+  public void init(String appKey) {
+    KakaoSdk.init(context, appKey);
+    isInit = true;
+  }
+
+  @ReactMethod
+  public void isInitialized(final Promise promise) {
+    promise.resolve(isInit);
+  }
+
+  @ReactMethod
+  public void login(final Promise promise) {
+    if (!UserApiClient.getInstance().isKakaoTalkLoginAvailable(context)) {
+      loginWithKakaoAccount(promise);
+      return;
+    }
+
+    UserApiClient.getInstance().loginWithKakaoTalk(context.getCurrentActivity(), (token, error) -> {
+      try {
+        if (error != null) {
+          throw error;
+        }
+
         WritableMap map = Arguments.createMap();
         map.putString("accessToken", token.getAccessToken());
         map.putString("refreshToken", token.getRefreshToken());
@@ -97,62 +162,32 @@ public class RNAKakaoSDK extends ReactContextBaseJavaModule implements ActivityE
         List<String> givenScopes = token.getScopes();
 
         if (givenScopes != null) {
-            for (String scope : givenScopes) {
-              scopes.pushString(scope);
-            }
+          for (String scope : givenScopes) {
+            scopes.pushString(scope);
+          }
         }
 
         map.putArray("scopes", scopes);
 
         promise.resolve(map);
       } catch (Throwable ex) {
-        promise.reject(ex);
-      }
-      return null;
-    });
-  }
-
-  @ReactMethod
-  public void login(final Promise promise) {
-    // change class into user api at kakao sdk 2.4
-    if (UserApiClient.getInstance().isKakaoTalkLoginAvailable(context)) {
-      UserApiClient.getInstance().loginWithKakaoTalk(context.getCurrentActivity(), (token, error) -> {
-        try {
-          if (error != null) {
-            throw new Exception(error.getMessage());
-          }
-
-          WritableMap map = Arguments.createMap();
-          map.putString("accessToken", token.getAccessToken());
-          map.putString("refreshToken", token.getRefreshToken());
-          map.putString("accessTokenExpiresAt", format(token.getAccessTokenExpiresAt()));
-          map.putString("refreshTokenExpiresAt", format(token.getRefreshTokenExpiresAt()));
-
-          WritableArray scopes = Arguments.createArray();
-
-          List<String> givenScopes = token.getScopes();
-
-          if (givenScopes != null) {
-              for (String scope : givenScopes) {
-                scopes.pushString(scope);
-              }
-          }
-
-          map.putArray("scopes", scopes);
-
-          promise.resolve(map);
-        } catch (Throwable ex) {
-          if (ex.getMessage().contains("not connected to")) {
+        if (ex instanceof AuthError) {
+          AuthError authError = (AuthError) ex;
+          if (authError.getStatusCode() == 302) {
+            // KakaoTalk is installed but not connected to Kakao account.
             loginWithKakaoAccount(promise);
+          } else {
+            promise
+                .reject(String.valueOf(authError.getStatusCode()), authError.getLocalizedMessage(),
+                    ex);
           }
+        } else {
           ex.printStackTrace();
           promise.reject(ex);
         }
-        return null;
-      });
-    } else {
-      loginWithKakaoAccount(promise);
-    }
+      }
+      return null;
+    });
   }
 
   @ReactMethod
@@ -178,9 +213,9 @@ public class RNAKakaoSDK extends ReactContextBaseJavaModule implements ActivityE
         List<String> givenScopes = token.getScopes();
 
         if (givenScopes != null) {
-            for (String scope : givenScopes) {
-              scopes.pushString(scope);
-            }
+          for (String scope : givenScopes) {
+            scopes.pushString(scope);
+          }
         }
 
         map.putArray("scopes", scopes);
