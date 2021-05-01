@@ -1,4 +1,4 @@
-# 카카오로그인 for React Native @ 2.0.18
+# KakaoSDK for React, React-Native
 
 - [카카오로그인 for React Native @ 2.0.18](#카카오로그인-for-react-native--2018)
   - [기본설정](#기본설정)
@@ -7,46 +7,45 @@
   - [사용방법](#사용방법)
 - [Changes](#changes)
 
-![platforms](https://img.shields.io/badge/platforms-Android%20%7C%20iOS-brightgreen.svg?style=flat-square&colorB=191A17)
-[![npm](https://img.shields.io/npm/v/@actbase/react-native-kakao-login.svg?style=flat-square)](https://www.npmjs.com/package/@actbase/react-native-kakao-login)
-[![npm](https://img.shields.io/npm/dm/@actbase/react-native-kakao-login.svg?style=flat-square&colorB=007ec6)](https://www.npmjs.com/package/@actbase/react-native-kakao-login)
+![platforms](https://img.shields.io/badge/platforms-Android%20%7C%20iOS%20%7C%20Web-brightgreen.svg?style=flat-square&colorB=191A17)
+[![npm](https://img.shields.io/npm/v/@actbase/react-kakaosdk.svg?style=flat-square)](https://www.npmjs.com/package/@actbase/react-kakaosdk)
+[![npm](https://img.shields.io/npm/dm/@actbase/react-kakaosdk.svg?style=flat-square&colorB=007ec6)](https://www.npmjs.com/package/@actbase/react-kakaosdk)
 
 
-[![github issues](https://img.shields.io/github/issues/trabricks/react-native-kakao-login.svg?style=flat-square)](https://github.com/trabricks/react-native-kakao-login/issues)
-[![github closed issues](https://img.shields.io/github/issues-closed/trabricks/react-native-kakao-login.svg?style=flat-square&colorB=44cc11)](https://github.com/trabricks/react-native-kakao-login/issues?q=is%3Aissue+is%3Aclosed)
-[![Issue Stats](https://img.shields.io/issuestats/i/github/trabricks/react-native-kakao-login.svg?style=flat-square&colorB=44cc11)](http://github.com/trabricks/react-native-kakao-login/issues)
+[![github issues](https://img.shields.io/github/issues/actbase/react-kakaosdk.svg?style=flat-square)](https://github.com/actbase/react-kakaosdk/issues)
+[![github closed issues](https://img.shields.io/github/issues-closed/actbase/react-kakaosdk.svg?style=flat-square&colorB=44cc11)](https://github.com/actbase/react-kakaosdk/issues?q=is%3Aissue+is%3Aclosed)
+[![Issue Stats](https://img.shields.io/issuestats/i/github/actbase/react-kakaosdk.svg?style=flat-square&colorB=44cc11)](http://github.com/actbase/react-kakaosdk/issues)
 
-## 기본설정
-
-현재 버전은 Kakao SDK v2반영 버전입니다.
-
-@actbase/react-native-KakaoSDK랑 상관없이 독립적으로 사용가능합니다.
-
-스위프트 기반 sdk라서.. 가이드는 좀 정리해서 다시 올리겠습니다.
-
-궁금한 사항이 있는경우 카카오톡 오픈채팅 React & React-Native에서 물어보면 많은 분들이 답변해주십니다.
-
-작업하시다가 외주 혹은 작업할 업체가 필요하면 [leader@trabricks.io](mailto:leader@trabricks.io)로 메일 주시면 친절하게 안내해드립니다.
-
-RN 0.60 이상 사용가능하며, Pod 필수입니다.
+## Use Dependencies
+|iOS  |Android|Web    |
+|-----|-------|-------|
+|[2.5.0](https://developers.kakao.com/docs/latest/ko/sdk-download/ios)|[2.5.0](https://developers.kakao.com/docs/latest/ko/sdk-download/android)  |[1.39.14](https://developers.kakao.com/docs/latest/ko/sdk-download/js)|
 
 
-## Getting started
+## 사용 환경
 
-### Mostly automatic installation (RN >= 0.60)
+- CRA (create-react-app)
+- Next.js
+- React-Native 0.61 이상
+- React-Native-Web
+
+## 시작하기
+
 
 ```bash
-$ npm install @actbase/react-native-kakao-login --save
-$ cd ios && pod install && cd ..
+$ npm install @actbase/react-kakaosdk --save
+
+// React-Native 사용 시 
+$ npx pod-install
 ```
 
 ## 사용방법
 
 ```js
-import KakaoLogin from '@actbase/react-native-kakao-login';
+import KakaoSDK from '@actbase/react-kakaosdk';
 
 // 카카오 로그인 시 처리부문
-const loginOutput = await KakaoLogin.login();
+const loginOutput = await KakaoSDK.login();
 
 ```
 
@@ -77,18 +76,13 @@ const profile = await KakaoLogins.getProfile();
 
 ```
 
-|변수명|설명               |
-|--|------------------|
-|id|카카오계정 고유키|
-|connected_at|연결한 일자|
-|kakao_account|[회원정보](https://developers.kakao.com/sdk/reference/ios-legacy/release/Classes/KOUserMe.html)|
-|properties|기타자료|
+# Contacts
 
+해당 모듈은 액트베이스(유)에서 개발 및 관리를 진행하고 있습니다. <br>
+프로젝트 문의 혹은 제휴가 필요한 경우 project@actbase.io로 연락주세요.
 
 # Changes
 
-- 2.0.18 
-  - android kakao sdk 메소드 위치 변경 대응
-- 2.0.17
-  - ios kakao sdk 메소드 위치 변경 대응
+- 0.0.1
+  - 첫 배포
 

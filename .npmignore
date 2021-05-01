@@ -1,0 +1,13 @@
+
+.idea/
+.git*
+src/
+src_modules/
+example/
+docs/
+
+.babelrc.js
+.gitignore
+.npmignore
+.prettierrc.js
+yarn.lock

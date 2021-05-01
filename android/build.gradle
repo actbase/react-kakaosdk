@@ -1,0 +1,50 @@
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.4.2'
+    }
+}
+
+
+def safeExtGet(prop, fallback) {
+    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion safeExtGet('compileSdkVersion', 29)
+
+    defaultConfig {
+        minSdkVersion safeExtGet('minSdkVersion', 19)
+        targetSdkVersion safeExtGet('targetSdkVersion', 29)
+        versionCode 1
+        versionName "1.0"
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+repositories {
+    maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' }
+}
+
+dependencies {
+    implementation 'com.facebook.react:react-native:+'
+    implementation "com.kakao.sdk:v2-user:2.5.0"
+    implementation "com.kakao.sdk:v2-talk:2.5.0"
+    implementation "com.kakao.sdk:v2-story:2.5.0"
+    implementation "com.kakao.sdk:v2-link:2.5.0"
+    implementation "com.kakao.sdk:v2-navi:2.5.0"
+}
+
