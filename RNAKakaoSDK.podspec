@@ -3,10 +3,10 @@ require 'json'
 package = JSON.parse(File.read(File.join(__dir__, 'package.json')))
 
 Pod::Spec.new do |s|
-  s.name          = "RCTKakaoSDK"
+  s.name          = "RNAKakaoSDK"
   s.version       = package['version']
   s.summary       = package['description']
-  
+
   s.authors       = { "Actbase LLC" => "project@actbase.io" }
   s.homepage      = package['homepage']
   s.license       = package['license']
@@ -19,8 +19,8 @@ Pod::Spec.new do |s|
   s.source_files  = "ios/*.{h,m,swift}"
 
   s.dependency "React"
-  s.dependency "KakaoSDK", "2.4.1"
+  s.dependency "KakaoSDK", "2.5.0"
 end
 
-  
+
 
