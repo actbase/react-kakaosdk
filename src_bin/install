@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const { exec } = require('child_process');
-const inquirer = require('inquirer');
+const readline = require('readline');
 
 const readFile = path => {
   return new Promise((resolve, reject) => {
@@ -29,6 +29,20 @@ const execute = cmd => {
   });
 };
 
+const question = query => {
+  return new Promise(resolve => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+
+    rl.question(query, data => {
+      resolve(data);
+      rl.close();
+    });
+  });
+};
+
 const start = async () => {
   let path = process.env.PWD;
   while (true) {
@@ -47,19 +61,43 @@ const start = async () => {
   }
 
   if (pkg.dependencies['react-native']) {
-    console.log('iOS 설치 시작');
-    console.log('1. Pod Install...');
-    // await execute(`pod install --repo-update --project-directory=${path}/ios`);
-    console.log('2. Info.plist 설정');
+    console.log('React Native에 맞춰서 설정을 시작합니다.');
+    const input = await question('KakaoSDK 키를 입력하세요. (TEST 키도 추가하시려면 ; 로 구분해서 넣어주세요) : ');
+    if (!input) {
+      console.log('입력 값이 없어서 패스합니다.');
+    } else {
+      const keys = input.split(';');
+      console.log(keys);
 
-    console.log('3. AppDelegate.m 설정');
+      console.log('iOS 설치 시작');
+      console.log('1. Pod Install...');
+      // await execute(`pod install --repo-update --project-directory=${path}/ios`);
+      console.log('2. Info.plist 설정');
 
-    console.log('Android 설치 시작');
-    console.log('1. AndroidManifest.xml 수정');
+      console.log('3. AppDelegate.m 설정');
 
-    const am = await readFile(path + '/android/app/src/main/AndroidManifest.xml');
-    if (am.indexOf('com.kakao.sdk.auth.AuthCodeHandlerActivity') <= 0) {
-      console.log('1-1. AuthCodeHandlerActivity 추가');
+      console.log('Android 설치 시작');
+      console.log('1. AndroidManifest.xml 수정');
+
+      let am = await readFile(path + '/android/app/src/main/AndroidManifest.xml');
+      if (am.indexOf('com.kakao.sdk.auth.AuthCodeHandlerActivity') === -1) {
+        console.log('1-1. AuthCodeHandlerActivity 추가');
+        const prefix = am.substring(0, am.indexOf('</activity>') + 11);
+        const content = `\n\n
+          <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
+            <intent-filter>
+              <action android:name="android.intent.action.VIEW"/>
+              <category android:name="android.intent.category.DEFAULT"/>
+              <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
+          </activity>
+        `;
+        const suffix = am.substring(am.indexOf('</activity>') + 11);
+        am = prefix + content + suffix;
+      }
+
+      // if (am.indexOf)
+      // <data android:host="oauth" android:scheme="kakao388774b0d647866207af243d7ec509be"/>
     }
   }
 
