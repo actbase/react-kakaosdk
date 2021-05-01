@@ -12,23 +12,36 @@ export const isInitialized = async () => {
 };
 
 export const login = async () => {
+  const result = await RNAKakaoSDK.login();
+  console.log(result);
   return undefined;
 };
 
 export const loginWithNewScopes = async (scopes: string[]) => {
-  console.log(scopes);
+  const result = await RNAKakaoSDK.loginWithNewScopes(scopes);
+  console.log(result);
   return undefined;
 };
 
-export const logout = async () => {};
+export const logout = async () => {
+  await RNAKakaoSDK.logout();
+};
 
-export const unlink = async () => {};
+export const unlink = async () => {
+  await RNAKakaoSDK.unlink();
+};
 
 export const getAccessToken = async () => {
+  const result = await RNAKakaoSDK.getAccessToken();
+  console.log(result);
   return undefined;
 };
 
-export const getProfile = async () => {};
+export const getProfile = async () => {
+  const result = await RNAKakaoSDK.getProfile();
+  console.log(result);
+  return undefined;
+};
 
 const app: KakaoSDK = {
   init,
