@@ -7,6 +7,10 @@ export const init = async (appKey: string) => {
   await RNAKakaoSDK.init(appKey);
 };
 
+export const isInitialized = async () => {
+  return await RNAKakaoSDK.isInitialized();
+};
+
 export const login = async () => {
   return undefined;
 };
@@ -28,6 +32,7 @@ export const getProfile = async () => {};
 
 const app: KakaoSDK = {
   init,
+  isInitialized,
   getAccessToken,
   getProfile,
   login,

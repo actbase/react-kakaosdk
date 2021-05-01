@@ -1,10 +1,16 @@
-import { AccessTokenType, KakaoSDK } from './types';
+import { KakaoSDK, ProfileType } from './types';
 
 const getKakaoSDK = (): Promise<any> => {
   return new Promise((resolve, reject) => {
     if (typeof window === 'undefined') reject({ message: 'unsupported platform' });
     // @ts-ignore
-    if (typeof window['Kakao'] !== 'undefined') resolve(window['Kakao']);
+    const kakaoSDK = global.Kakao;
+    if (kakaoSDK) {
+      resolve(kakaoSDK);
+      return;
+    }
+
+    console.log('create KakaoSDK..');
     var jsapi = document.createElement('script');
     jsapi.type = 'text/javascript';
     jsapi.src = 'https://developers.kakao.com/sdk/js/kakao.min.js';
@@ -12,43 +18,50 @@ const getKakaoSDK = (): Promise<any> => {
     s?.parentNode?.insertBefore(jsapi, s);
     jsapi.onload = () => {
       // @ts-ignore
-      resolve(window['Kakao']);
+      resolve(global.Kakao);
     };
     jsapi.onerror = reject;
     jsapi.onabort = reject;
   });
 };
 
-const getToken = (Kakao: any): AccessTokenType => {
-  const output = Kakao.Auth.getAccessToken();
-  return {
-    access_token: output.access_token,
-    refresh_token: output.refresh_token,
-    access_token_expiresAt: output.access_token_expiresAt,
-    refresh_token_expiresAt: output.refresh_token_expiresAt,
-    scopes: output.scopes,
-  };
-};
-
 export const init = async (appKey: string) => {
   const Kakao = await getKakaoSDK();
-  Kakao.init(appKey);
+  if (!Kakao.isInitialized()) Kakao.init(appKey);
+};
+
+export const isInitialized = async () => {
+  const Kakao = await getKakaoSDK();
+  return Kakao.isInitialized();
 };
 
 export const login = async () => {
   const Kakao = await getKakaoSDK();
-  const scope = 'account_email,gender';
-  const exec = () => new Promise((success, fail) => Kakao.Auth.login({ scope, success, fail }));
-  console.log(await exec());
-  return getToken(Kakao);
+  const exec = () => new Promise((success, fail) => Kakao.Auth.login({ scope: '', success, fail }));
+  const output: any = (await exec()) || {};
+  return {
+    access_token: output?.access_token,
+    expires_in: output?.expires_in,
+    refresh_token: output?.refresh_token,
+    refresh_token_expires_in: output?.refresh_token_expires_in,
+    scope: output?.scope.split(' '),
+    token_type: output.token_type,
+  };
 };
 
 export const loginWithNewScopes = async (scopes: string[]) => {
   const Kakao = await getKakaoSDK();
   const scope = scopes?.join(',');
   const exec = () => new Promise((success, fail) => Kakao.Auth.login({ scope, success, fail }));
-  console.log(await exec());
-  return getToken(Kakao);
+  const output: any = (await exec()) || {};
+  return {
+    access_token: output?.access_token,
+    expires_in: output?.expires_in,
+    refresh_token: output?.refresh_token,
+    refresh_token_expires_in: output?.refresh_token_expires_in,
+    scope: output?.scope.split(' '),
+    token_type: output.token_type,
+  };
 };
 
 export const logout = async () => {
@@ -68,19 +81,27 @@ export const unlink = async () => {
 
 export const getAccessToken = async () => {
   const Kakao = await getKakaoSDK();
-  return getToken(Kakao);
+  const output: any = Kakao.Auth.getAccessToken();
+  return {
+    access_token: output?.access_token,
+    expires_in: output?.expires_in,
+    refresh_token: output?.refresh_token,
+    refresh_token_expires_in: output?.refresh_token_expires_in,
+    scope: output?.scope.split(' '),
+    token_type: output.token_type,
+  };
 };
 
-export const getProfile = async () => {
+export const getProfile = async (): Promise<ProfileType> => {
   const Kakao = await getKakaoSDK();
   const url = '/v2/user/me';
   const exec = () => new Promise((success, fail) => Kakao.API.request({ url, success, fail }));
-  console.log(await exec());
-  return {};
+  return <ProfileType>await exec();
 };
 
 const app: KakaoSDK = {
   init,
+  isInitialized,
   getAccessToken,
   getProfile,
   login,
