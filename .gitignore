@@ -4,6 +4,7 @@
 /dist
 /lib
 /modules
+/bin
 
 .idea
 .watchmanconfig

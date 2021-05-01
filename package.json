@@ -10,7 +10,8 @@
   "typings": "lib/index.d.ts",
   "scripts": {
     "build:src": "rm -rf ./lib && tsc -p src/tsconfig.json && babel lib --out-dir lib",
-    "build": "npm run build:src",
+    "build:bin": "rm -rf ./bin && babel src_bin --out-dir bin --copy-files",
+    "build": "npm run build:src && npm run build:bin",
     "prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

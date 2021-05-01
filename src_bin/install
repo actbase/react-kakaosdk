@@ -1,0 +1,87 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const { exec } = require('child_process');
+
+const readFile = path => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(path, 'utf8', (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
+
+const execute = cmd => {
+  return new Promise((resolve, reject) => {
+    exec(cmd?.replace(/\n/g, ' '), (err, stdout, stderr) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else {
+        resolve({ stdout, stderr });
+      }
+    });
+  });
+};
+
+const start = async () => {
+  let path = process.env.PWD;
+  while (true) {
+    if (fs.existsSync(path + '/package.json')) break;
+    if (path.length < 10) {
+      throw { message: 'not found package.json' };
+    }
+    path = path.substring(0, path.lastIndexOf('/'));
+  }
+
+  const pkg = JSON.parse(await readFile(path + '/package.json'));
+  if (!pkg.dependencies['@actbase/react-kakaosdk']) {
+    throw {
+      message: 'no installed @actbase/react-kakaosdk',
+    };
+  }
+
+  if (pkg.dependencies['react-native']) {
+    console.log('iOS 설치 시작');
+    console.log('1. Pod Install...');
+    // await execute(`pod install --repo-update --project-directory=${path}/ios`);
+    console.log('2. Info.plist 설정');
+
+    console.log('Android 설치 시작');
+    console.log('1. AndroidManifest.xml 수정');
+  }
+
+  console.log(``);
+  console.log(`================================================`);
+  console.log(``);
+  console.log(`- Getting Start`);
+  console.log(`import KakaoSDK from '@actbase/react-kakaosdk';`);
+  console.log(`KakaoSDK.init('[카카오 앱 키]');`);
+  console.log(``);
+  console.log(`- Kakao 로그인, 로그아웃 관련`);
+  console.log(`KakaoSDK.login(); -> 로그인 처리`);
+  console.log(`KakaoSDK.logout(); -> 로그아웃 처리`);
+  console.log(`KakaoSDK.unlink(); -> 연결해제 (탈퇴)`);
+  console.log(``);
+  console.log(`- 카카오 프로필 관련`);
+  console.log(`const profile = KakaoSDK.getProfile();`);
+  console.log(``);
+  console.log(`================================================`);
+  console.log(`자세한 부분은 npm, github를 참고하세요.`);
+  console.log(`https://github.com/actbase/react-kakaosdk`);
+  console.log(``);
+
+  // if (!fs.existsSync('./package.json')) {
+  //   console.error('Not found package.json');
+  //   process.exit(1);
+  // }
+};
+
+start().catch(e => {
+  console.warn(e);
+  process.exit(1);
+});
