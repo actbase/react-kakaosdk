@@ -1,17 +1,9 @@
 # KakaoSDK for React, React-Native
 
-- [카카오로그인 for React Native @ 2.0.18](#카카오로그인-for-react-native--2018)
-  - [기본설정](#기본설정)
-  - [Getting started](#getting-started)
-    - [Mostly automatic installation (RN >= 0.60)](#mostly-automatic-installation-rn--060)
-  - [사용방법](#사용방법)
-- [Changes](#changes)
 
 ![platforms](https://img.shields.io/badge/platforms-Android%20%7C%20iOS%20%7C%20Web-brightgreen.svg?style=flat-square&colorB=191A17)
 [![npm](https://img.shields.io/npm/v/@actbase/react-kakaosdk.svg?style=flat-square)](https://www.npmjs.com/package/@actbase/react-kakaosdk)
 [![npm](https://img.shields.io/npm/dm/@actbase/react-kakaosdk.svg?style=flat-square&colorB=007ec6)](https://www.npmjs.com/package/@actbase/react-kakaosdk)
-
-
 [![github issues](https://img.shields.io/github/issues/actbase/react-kakaosdk.svg?style=flat-square)](https://github.com/actbase/react-kakaosdk/issues)
 [![github closed issues](https://img.shields.io/github/issues-closed/actbase/react-kakaosdk.svg?style=flat-square&colorB=44cc11)](https://github.com/actbase/react-kakaosdk/issues?q=is%3Aissue+is%3Aclosed)
 [![Issue Stats](https://img.shields.io/issuestats/i/github/actbase/react-kakaosdk.svg?style=flat-square&colorB=44cc11)](http://github.com/actbase/react-kakaosdk/issues)
