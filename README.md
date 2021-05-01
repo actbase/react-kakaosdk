@@ -13,6 +13,28 @@
 | --------------------------------------------------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | [2.5.0](https://developers.kakao.com/docs/latest/ko/sdk-download/ios) | [2.5.0](https://developers.kakao.com/docs/latest/ko/sdk-download/android) | [1.39.14](https://developers.kakao.com/docs/latest/ko/sdk-download/js) |
 
+### 처음 설치 시 주의 사항 (React-Native 만)
+
+해당 모듈은 Swift로 되어있어서 <br />
+그냥 가동 시 작동이 안될 수 있습니다.
+
+Xcode에서 프로젝트 내 비어있는 Swift File를 새로 만들고 Headers 생성을 누르면<br />
+스위프트 모드로 잡히면서 정상적으로 돌게 됩니다.
+
+이후 해결방안 나오면 별도로 공지하겠습니다.
+
+### Xcode 12.5 업뎃 후 빌드 실패 해결법 (React-Native 만)
+
+갑자기 Xcode 업데이트 후 디버그로는 빌드가 안되는 문제가 있습니다.<br />
+원인은 Alamofire에서 나오는 부분인데 프로젝트 설정으로 해결할 수 있습니다.
+
+해당 프로젝트 설정을 접근 후 Target에 프로젝트에서
+Build Settings 접근 후 Library Search Path를 검색하면 그 안에 Debug쪽에 있는 부분을 수정해야합니다.
+
+<img src="https://github.com/actbase/react-kakaosdk/raw/master/assets/xcode_0501.png" title="Xcode Settings" float="left">
+
+\$(inherited)를 제외한 2개를 삭제 후 저장하고 빌드하면 정상적으로 돌아갑니다.
+
 ## 사용 환경
 
 - CRA (create-react-app)
@@ -37,13 +59,13 @@ import KakaoSDK from '@actbase/react-kakaosdk';
 const tokens = await KakaoSDK.login();
 ```
 
-| 변수명                | 설명                             |
-| --------------------- | --------------------------- |
-| access_token          | 카카오의 access_token           |
-| refresh_token         | 카카오의 refresh_token          |
-| expires_in            | 카카오의 accessToken 만료 남은 초  |
+| 변수명                   | 설명                               |
+| ------------------------ | ---------------------------------- |
+| access_token             | 카카오의 access_token              |
+| refresh_token            | 카카오의 refresh_token             |
+| expires_in               | 카카오의 accessToken 만료 남은 초  |
 | refresh_token_expires_in | 카카오의 refreshToken 만료 남은 초 |
-| scopes                | 사용권한                        |
+| scopes                   | 사용권한                           |
 
 ```js
 import KakaoSDK from '@actbase/react-kakaosdk';
