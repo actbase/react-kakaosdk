@@ -1,21 +1,36 @@
 import { NativeModules } from 'react-native';
-import { AccessTokenType, KakaoSDK } from './types';
+import { KakaoSDK, ProfileType } from './types';
 
 const { RNAKakaoSDK } = NativeModules;
-
-export const init = async (appKey: string) => {
-  await RNAKakaoSDK.init(appKey);
-};
-
-export const isInitialized = async () => {
-  return await RNAKakaoSDK.isInitialized();
-};
 
 const dateToSeconds = (str: string): number => {
   const v = new Date(str?.replace(' ', 'T')).getTime();
   const n = new Date().getTime();
   return Math.floor((v - n) / 1000);
 };
+
+const valueToSnakeCase = (data: { [key: string]: any }) => {
+  const args: { [key: string]: any } = {};
+  for (const key of Object.keys(data)) {
+    const nkey: string = key.replace(/(?:^|\.?)([A-Z])/g, (_x, y) => '_' + y.toLowerCase()).replace(/^_/, '');
+    if (data[key] && typeof data[key] === 'object' && !data[key]?.push && Object.keys(data[key])?.length > 0) {
+      args[nkey] = valueToSnakeCase(data[key]);
+    } else {
+      args[nkey] = data[key];
+    }
+  }
+
+  return args;
+};
+
+export const init = async (appKey: string) => {
+  RNAKakaoSDK.init(appKey);
+};
+
+export const isInitialized = async () => {
+  return await RNAKakaoSDK.isInitialized();
+};
+
 export const login = async () => {
   const result = await RNAKakaoSDK.login();
   return {
@@ -57,10 +72,9 @@ export const getAccessToken = async () => {
   };
 };
 
-export const getProfile = async () => {
+export const getProfile: () => Promise<ProfileType> = async () => {
   const result = await RNAKakaoSDK.getProfile();
-  console.log(result);
-  return undefined;
+  return <ProfileType>valueToSnakeCase(result);
 };
 
 const app: KakaoSDK = {
