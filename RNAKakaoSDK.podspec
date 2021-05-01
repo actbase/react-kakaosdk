@@ -22,8 +22,8 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '11.0'
 
+  s.dependency 'React'
   s.dependency 'React-Core'
-  s.dependency 'React-RCTText'
   s.dependency 'KakaoSDK', '2.5.0'
 end
 
