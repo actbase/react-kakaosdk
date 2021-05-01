@@ -89,5 +89,5 @@ const profile = await KakaoSDK.getProfile();
 
 # Changes
 
-- 0.7.0
+- 0.9.3
   - 첫 배포
