@@ -13,6 +13,8 @@ import KakaoSDKUser
 @objc(RNAKakaoSDK)
 public class RNAKakaoSDK: NSObject {
 
+    fileprivate var inited = false;
+
     @objc
     static func requiresMainQueueSetup() -> Bool {
       return true
@@ -35,8 +37,15 @@ public class RNAKakaoSDK: NSObject {
     }
 
     @objc(init:)
-    func login(_ appKey: String) -> Void {
+    func sdkinit(_ appKey: String) -> Void {
         KakaoSDKCommon.initSDK(appKey: appKey)
+        inited = true
+    }
+
+    @objc(isInitialized:rejecter:)
+    func isInitialized(_ resolve: @escaping RCTPromiseResolveBlock,
+                       rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        resolve(inited);
     }
 
     @objc(login:rejecter:)
@@ -61,7 +70,8 @@ public class RNAKakaoSDK: NSObject {
                             "scopes": oauthToken?.scopes,
                         ])
                     } catch let e {
-                        reject("RCTKakaoSDK", e.asAFError?.errorDescription, nil)
+                        print(e);
+                        reject("actbase_kakao_sdk", e.localizedDescription, nil)
                     }
                 }
             }
@@ -80,7 +90,8 @@ public class RNAKakaoSDK: NSObject {
                             "scopes": oauthToken?.scopes,
                         ])
                     } catch let e {
-                        reject("RCTKakaoSDK", e.asAFError?.errorDescription, nil)
+                        print(e);
+                        reject("actbase_kakao_sdk", e.localizedDescription, nil)
                     }
                 }
             }
@@ -116,7 +127,7 @@ public class RNAKakaoSDK: NSObject {
                         ])
 
                     } catch let e {
-                        reject("RCTKakaoSDK", e.asAFError?.errorDescription, nil)
+                        reject("actbase_kakao_sdk", e.localizedDescription, nil)
                     }
                 }
             }
@@ -135,7 +146,7 @@ public class RNAKakaoSDK: NSObject {
                     }
                     resolve("SUCCESS")
                 } catch let e {
-                    reject("RCTKakaoSDK", e.asAFError?.errorDescription, nil)
+                    reject("actbase_kakao_sdk", e.localizedDescription, nil)
                 }
             }
         }
@@ -153,7 +164,7 @@ public class RNAKakaoSDK: NSObject {
                     }
                     resolve("SUCCESS")
                 } catch let e {
-                    reject("RCTKakaoSDK", e.asAFError?.errorDescription, nil)
+                    reject("actbase_kakao_sdk", e.localizedDescription, nil)
                 }
             }
         }
@@ -174,7 +185,7 @@ public class RNAKakaoSDK: NSObject {
                         "expiresIn": accessTokenInfo?.expiresIn
                     ])
                 } catch let e {
-                    reject("RCTKakaoSDK", e.asAFError?.errorDescription, nil)
+                    reject("actbase_kakao_sdk", e.localizedDescription, nil)
                 }
             }
         }
@@ -288,7 +299,7 @@ public class RNAKakaoSDK: NSObject {
                     map.updateValue(user?.properties, forKey: "properties");
                     resolve(map)
                 } catch let e {
-                    reject("RCTKakaoSDK", e.asAFError?.errorDescription, nil)
+                    reject("actbase_kakao_sdk", e.localizedDescription, nil)
                 }
             }
         }

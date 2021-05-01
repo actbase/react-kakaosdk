@@ -19,7 +19,6 @@ const valueToSnakeCase = (data: { [key: string]: any }) => {
       args[nkey] = data[key];
     }
   }
-
   return args;
 };
 
