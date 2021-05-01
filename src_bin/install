@@ -3,10 +3,35 @@
 const fs = require('fs');
 const { exec } = require('child_process');
 const readline = require('readline');
+const plist = require('plist');
 
 const readFile = path => {
   return new Promise((resolve, reject) => {
     fs.readFile(path, 'utf8', (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
+
+const writeFile = (path, content) => {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(path, content, 'utf8', (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+};
+
+const readDir = path => {
+  return new Promise((resolve, reject) => {
+    fs.readdir(path, 'utf8', (err, data) => {
       if (err) {
         reject(err);
       } else {
@@ -55,76 +80,166 @@ const start = async () => {
 
   const pkg = JSON.parse(await readFile(path + '/package.json'));
   if (!pkg.dependencies['@actbase/react-kakaosdk']) {
-    throw {
-      message: 'no installed @actbase/react-kakaosdk',
-    };
+    await exec(`npm i @actbase/react-kakaosdk`);
+    // throw {
+    //   message: 'no installed @actbase/react-kakaosdk',
+    // };
   }
 
   if (pkg.dependencies['react-native']) {
     console.log('React Native에 맞춰서 설정을 시작합니다.');
-    const input = await question('KakaoSDK 키를 입력하세요. (TEST 키도 추가하시려면 ; 로 구분해서 넣어주세요) : ');
-    if (!input) {
-      console.log('입력 값이 없어서 패스합니다.');
-    } else {
-      const keys = input.split(';');
-      console.log(keys);
+    const input = await question(
+      '네이티브 앱 키를 입력하세요. (빈칸이면 기본설치  / TEST 키도 추가하시려면 ; 로 구분해서 넣어주세요) : ',
+    );
+    const keys = input ? input.split(';') : [];
+    console.log('iOS 설치 시작');
 
-      console.log('iOS 설치 시작');
+    let name = (await readDir(path + '/ios'))?.filter(v => v.endsWith('.xcodeproj'))?.[0];
+    name = name.substring(0, name.indexOf('.xcode'));
+
+    {
       console.log('1. Pod Install...');
-      // await execute(`pod install --repo-update --project-directory=${path}/ios`);
+      let podfile = (await readFile(path + '/ios/PodFile')).split('\n');
+      const ix = podfile.findIndex(x => x.indexOf('platform :ios') >= 0);
+      if (ix >= 0) {
+        podfile[ix] = podfile[ix].replace("'9.", "'11.").replace("'10.", "'11.");
+      }
+      await writeFile(path + '/ios/PodFile', podfile.join('\n'));
+      await execute(`pod install --repo-update --project-directory=${path}/ios`);
+    }
+
+    {
       console.log('2. Info.plist 설정');
+      const plists = [];
+      let pbx = (await readFile(path + `/ios/${name}.xcodeproj/project.pbxproj`)).split('\n');
+      const pbxoutput = pbx
+        .map(v => {
+          if (v.indexOf('INFOPLIST_FILE') >= 0) {
+            plists.push(v.substring(v.indexOf('=') + 1).trim());
+          }
+          if (v.indexOf('IPHONEOS_DEPLOYMENT_TARGET') >= 0) {
+            return v.replace('9.', '11.').replace('10.', '11.');
+          }
+          return v;
+        })
+        .join('\n');
+      console.log(' > Deployment 버전 확인 후 낮을 시 올립니다.');
 
+      await writeFile(path + `/ios/${name}.xcodeproj/project.pbxproj`, pbxoutput);
+      for (const plistPath of plists?.filter((v, ix) => plists.indexOf(v) === ix)) {
+        let r = plistPath.substring(0, plistPath.length - 1);
+        r = r.replace(/\$\(SRCROOT\)/g, '');
+        r = r.replace(/\"/g, '');
+
+        const appPlist = plist.parse(await readFile(path + `/ios/${r}`));
+        if (!appPlist.LSApplicationQueriesSchemes) {
+          appPlist.LSApplicationQueriesSchemes = [];
+        }
+        if (!appPlist.LSApplicationQueriesSchemes.includes('kakaokompassauth')) {
+          appPlist.LSApplicationQueriesSchemes.push('kakaokompassauth');
+        }
+        if (!appPlist.LSApplicationQueriesSchemes.includes('kakaolink')) {
+          appPlist.LSApplicationQueriesSchemes.push('kakaolink');
+        }
+
+        if (!appPlist.CFBundleURLTypes) {
+          appPlist.CFBundleURLTypes = [];
+        }
+
+        for (const key of keys) {
+          if (!appPlist.LSApplicationQueriesSchemes.includes(key)) {
+            appPlist.LSApplicationQueriesSchemes.push(key);
+          }
+          if (!appPlist.LSApplicationQueriesSchemes.includes(`kakao${key}`)) {
+            appPlist.LSApplicationQueriesSchemes.push(`kakao${key}`);
+          }
+
+          if (!appPlist.CFBundleURLTypes.find(v => v.CFBundleURLSchemes.includes(`kakao${key}`))) {
+            appPlist.CFBundleURLTypes.push({
+              CFBundleTypeRole: 'Editor',
+              CFBundleURLSchemes: [`kakao${key}`],
+            });
+          }
+        }
+        await writeFile(path + `/ios/${r}`, plist.build(appPlist));
+      }
+      console.log(' > Plist 내 설정값을 지정합니다.');
+    }
+
+    {
       console.log('3. AppDelegate.m 설정');
-
-      console.log('Android 설치 시작');
-      console.log('1. AndroidManifest.xml 수정');
-
-      let am = await readFile(path + '/android/app/src/main/AndroidManifest.xml');
-      if (am.indexOf('com.kakao.sdk.auth.AuthCodeHandlerActivity') === -1) {
-        console.log('1-1. AuthCodeHandlerActivity 추가');
-        const prefix = am.substring(0, am.indexOf('</activity>') + 11);
-        const content = `\n\n
-          <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
-            <intent-filter>
-              <action android:name="android.intent.action.VIEW"/>
-              <category android:name="android.intent.category.DEFAULT"/>
-              <category android:name="android.intent.category.BROWSABLE"/>
-            </intent-filter>
-          </activity>
-        `;
-        const suffix = am.substring(am.indexOf('</activity>') + 11);
-        am = prefix + content + suffix;
+      let adf = await readFile(path + `/ios/${name}/AppDelegate.m`);
+      if (adf.indexOf('WithKakaoSDK.h') < 0) {
+        adf = '#import "WithKakaoSDK.h"\n' + adf;
       }
 
-      // if (am.indexOf)
-      // <data android:host="oauth" android:scheme="kakao388774b0d647866207af243d7ec509be"/>
+      if (adf.indexOf('[WithKakaoSDK isKakaoTalkLoginUrl:url]') < 0) {
+        let adfsplit = adf.split('\n');
+        const ix = [];
+        adfsplit.forEach((x, n) => {
+          if (x.indexOf('application:') > 0 && x.indexOf('penURL') > 0 && !x.trim().startsWith('//')) {
+            ix.push(n);
+          }
+        });
+
+        if (ix.length > 0) {
+          console.log(' > openURL시 이벤트가 삽입되야 합니다.');
+          console.log(
+            ' > "if ([WithKakaoSDK isKakaoTalkLoginUrl:url]) return [WithKakaoSDK handleOpenUrl:url];" 를 openURL 옵션에 넣어주세요',
+          );
+          console.log(' > 자세한 내용은 github install manual 참고하세요.');
+        } else {
+          const pf = adf.substring(0, adf.lastIndexOf('@'));
+          const cx = `
+- (BOOL) application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+  if ([WithKakaoSDK isKakaoTalkLoginUrl:url]) return [WithKakaoSDK handleOpenUrl:url];
+  return YES;
+}
+`;
+          const sf = adf.substring(adf.lastIndexOf('@'));
+          adf = pf + cx + sf;
+          await writeFile(path + `/ios/${name}/AppDelegate.m`, adf);
+        }
+      }
+
+      console.log(' > 저장 완료.');
+    }
+
+    console.log('Android 설치 시작');
+    console.log('1. AndroidManifest.xml 수정');
+    if (keys.length > 0) {
+      let am = await readFile(path + '/android/app/src/main/AndroidManifest.xml');
+      if (am.indexOf('com.kakao.sdk.auth.AuthCodeHandlerActivity') === -1) {
+        const prefix = am.substring(0, am.indexOf('</activity>') + 11);
+        const dataList = keys.map(key => `<data android:host="oauth" android:scheme="kakao${key.trim()}"/>`).join('\n');
+        const content = `\n\n
+        <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
+          <intent-filter>
+            <action android:name="android.intent.action.VIEW"/>
+            <category android:name="android.intent.category.DEFAULT"/>
+            <category android:name="android.intent.category.BROWSABLE"/>
+            ${dataList}
+          </intent-filter>
+        </activity>
+      `;
+        const suffix = am.substring(am.indexOf('</activity>') + 11);
+        am = prefix + content + suffix;
+        await writeFile(path + '/android/app/src/main/AndroidManifest.xml', am);
+        console.log(' > AndroidManifest.xml 수정완료.');
+      } else {
+        console.log(' > AuthCodeHandlerActivity 가 존재합니다. 키를 확인해주세요.');
+      }
+    } else {
+      console.log(' > Key가 없는 관계로 우선 패스합니다.');
     }
   }
 
-  // console.log(``);
-  // console.log(`================================================`);
-  // console.log(``);
-  // console.log(`- Getting Start`);
-  // console.log(`import KakaoSDK from '@actbase/react-kakaosdk';`);
-  // console.log(`KakaoSDK.init('[카카오 앱 키]');`);
-  // console.log(``);
-  // console.log(`- Kakao 로그인, 로그아웃 관련`);
-  // console.log(`KakaoSDK.login(); -> 로그인 처리`);
-  // console.log(`KakaoSDK.logout(); -> 로그아웃 처리`);
-  // console.log(`KakaoSDK.unlink(); -> 연결해제 (탈퇴)`);
-  // console.log(``);
-  // console.log(`- 카카오 프로필 관련`);
-  // console.log(`const profile = KakaoSDK.getProfile();`);
-  // console.log(``);
-  // console.log(`================================================`);
-  // console.log(`자세한 부분은 npm, github를 참고하세요.`);
-  // console.log(`https://github.com/actbase/react-kakaosdk`);
-  // console.log(``);
-
-  // if (!fs.existsSync('./package.json')) {
-  //   console.error('Not found package.json');
-  //   process.exit(1);
-  // }
+  console.log(``);
+  console.log(`================================================`);
+  console.log(`설치완료..`);
+  console.log(`자세한 부분은 github를 참고하세요.`);
+  console.log(`https://github.com/actbase/react-kakaosdk`);
+  console.log(``);
 };
 
 start().catch(e => {
