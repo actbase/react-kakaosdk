@@ -63,11 +63,11 @@ public class RNAKakaoSDK: NSObject {
                             throw error;
                         }
                         resolve([
-                            "accessToken": oauthToken?.accessToken,
-                            "refreshToken": oauthToken?.refreshToken,
+                            "accessToken": oauthToken!.accessToken,
+                            "refreshToken": oauthToken!.refreshToken,
                             "accessTokenExpiresAt": dateFormatter.string(from: oauthToken!.expiredAt),
                             "refreshTokenExpiresAt": dateFormatter.string(from: oauthToken!.refreshTokenExpiredAt),
-                            "scopes": oauthToken?.scopes,
+                            "scopes": oauthToken?.scopes!,
                         ])
                     } catch let e {
                         print(e);
@@ -83,11 +83,11 @@ public class RNAKakaoSDK: NSObject {
                         }
 
                         resolve([
-                            "accessToken": oauthToken?.accessToken,
-                            "refreshToken": oauthToken?.refreshToken,
+                            "accessToken": oauthToken!.accessToken,
+                            "refreshToken": oauthToken!.refreshToken,
                             "accessTokenExpiresAt": dateFormatter.string(from: oauthToken!.expiredAt),
                             "refreshTokenExpiresAt": dateFormatter.string(from: oauthToken!.refreshTokenExpiredAt),
-                            "scopes": oauthToken?.scopes,
+                            "scopes": oauthToken?.scopes!,
                         ])
                     } catch let e {
                         print(e);
@@ -106,7 +106,7 @@ public class RNAKakaoSDK: NSObject {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss";
 
-            var scopes = scopedata as? [String]
+            let scopes = scopedata as? [String]
             UserApi.shared.loginWithKakaoAccount(scopes: scopes!) { (oauthToken, error) in
                 if let error = error {
                     reject("RCTKakaoSDK", error.asAFError?.errorDescription, nil)
@@ -119,11 +119,11 @@ public class RNAKakaoSDK: NSObject {
                         }
 
                         resolve([
-                            "accessToken": oauthToken?.accessToken,
-                            "refreshToken": oauthToken?.refreshToken,
+                            "accessToken": oauthToken!.accessToken,
+                            "refreshToken": oauthToken!.refreshToken,
                             "accessTokenExpiresAt": dateFormatter.string(from: oauthToken!.expiredAt),
                             "refreshTokenExpiresAt": dateFormatter.string(from: oauthToken!.refreshTokenExpiredAt),
-                            "scopes": oauthToken?.scopes,
+                            "scopes": oauthToken?.scopes!,
                         ])
 
                     } catch let e {
@@ -205,27 +205,27 @@ public class RNAKakaoSDK: NSObject {
                     }
 
                     var map: [String: Any] = [
-                        "id": user?.id,
+                        "id": user!.id as Any,
                         "connectedAt": dateFormatter.string(from: user!.connectedAt!)
                     ];
 
                     var kakaoAccount: [String: Any] = [:]
-                    var origin: Account = user!.kakaoAccount!
+                    let origin: Account = user!.kakaoAccount!
 
                     if (origin.emailNeedsAgreement != nil) {
                         if (origin.emailNeedsAgreement == false) {
-                            kakaoAccount.updateValue(origin.email, forKey: "email")
+                            kakaoAccount.updateValue(origin.email ?? "", forKey: "email")
                         }
-                        kakaoAccount.updateValue(origin.emailNeedsAgreement, forKey: "emailNeedsAgreement")
-                        kakaoAccount.updateValue(origin.isEmailValid, forKey: "isEmailValid")
-                        kakaoAccount.updateValue(origin.isEmailVerified, forKey: "isEmailVerified")
+                        kakaoAccount.updateValue(origin.emailNeedsAgreement ?? false, forKey: "emailNeedsAgreement")
+                        kakaoAccount.updateValue(origin.isEmailValid ?? false, forKey: "isEmailValid")
+                        kakaoAccount.updateValue(origin.isEmailVerified ?? false, forKey: "isEmailVerified")
                     }
 
                     if (origin.birthdayNeedsAgreement != nil) {
                         if (origin.birthdayNeedsAgreement == false) {
-                            kakaoAccount.updateValue(origin.birthday, forKey: "birthday")
+                            kakaoAccount.updateValue(origin.birthday ?? "", forKey: "birthday")
                         }
-                        kakaoAccount.updateValue(origin.birthdayNeedsAgreement, forKey: "birthdayNeedsAgreement")
+                        kakaoAccount.updateValue(origin.birthdayNeedsAgreement ?? false, forKey: "birthdayNeedsAgreement")
                     }
 
                     if (origin.birthyearNeedsAgreement != nil) {
