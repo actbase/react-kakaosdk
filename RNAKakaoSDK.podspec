@@ -25,6 +25,9 @@ Pod::Spec.new do |s|
   s.dependency 'React'
   s.dependency 'React-Core'
   s.dependency 'KakaoSDK', '2.5.0'
+
+  s.framework  = "WebKit"
+  s.ios.framework = "MobileCoreServices"
 end
 
 
