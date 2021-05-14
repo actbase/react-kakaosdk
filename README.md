@@ -89,5 +89,7 @@ const profile = await KakaoSDK.getProfile();
 
 # Changes
 
+- 0.9.4
+  - 안드로이드 간혈적 kakaoAccount null 일 경우 처리
 - 0.9.3
   - 첫 배포

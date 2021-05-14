@@ -277,6 +277,7 @@ public class RNAKakaoSDK extends ReactContextBaseJavaModule {
     UserApiClient.getInstance().me((user, error) -> {
       try {
         if (error != null) {
+          error.printStackTrace();
           throw new Exception(error.getMessage());
         }
 
@@ -287,103 +288,104 @@ public class RNAKakaoSDK extends ReactContextBaseJavaModule {
         {
           WritableMap kakaoAccount = Arguments.createMap();
           Account origin = user.getKakaoAccount();
-          if (origin.getEmailNeedsAgreement() != null) {
-            if (origin.getEmailNeedsAgreement() == Boolean.FALSE) {
-              kakaoAccount.putString("email", origin.getEmail());
+          if (origin != null) {
+            if (origin.getEmailNeedsAgreement() != null) {
+              if (origin.getEmailNeedsAgreement() == Boolean.FALSE) {
+                kakaoAccount.putString("email", origin.getEmail());
+              }
+              kakaoAccount.putBoolean("emailNeedsAgreement", toBool(origin.getEmailNeedsAgreement()));
+              kakaoAccount.putBoolean("isEmailValid", toBool(origin.isEmailValid()));
+              kakaoAccount.putBoolean("isEmailVerified", toBool(origin.isEmailVerified()));
             }
-            kakaoAccount.putBoolean("emailNeedsAgreement", toBool(origin.getEmailNeedsAgreement()));
-            kakaoAccount.putBoolean("isEmailValid", toBool(origin.isEmailValid()));
-            kakaoAccount.putBoolean("isEmailVerified", toBool(origin.isEmailVerified()));
-          }
 
-          if (origin.getBirthdayNeedsAgreement() != null) {
-            if (origin.getBirthdayNeedsAgreement() == Boolean.FALSE) {
-              kakaoAccount.putString("birthday", origin.getBirthday());
+            if (origin.getBirthdayNeedsAgreement() != null) {
+              if (origin.getBirthdayNeedsAgreement() == Boolean.FALSE) {
+                kakaoAccount.putString("birthday", origin.getBirthday());
+              }
+              kakaoAccount
+                  .putBoolean("birthdayNeedsAgreement", toBool(origin.getBirthdayNeedsAgreement()));
             }
-            kakaoAccount
-                .putBoolean("birthdayNeedsAgreement", toBool(origin.getBirthdayNeedsAgreement()));
-          }
 
-          if (origin.getBirthyearNeedsAgreement() != null) {
-            if (origin.getBirthyearNeedsAgreement() == Boolean.FALSE) {
-              kakaoAccount.putString("birthyear", origin.getBirthyear());
+            if (origin.getBirthyearNeedsAgreement() != null) {
+              if (origin.getBirthyearNeedsAgreement() == Boolean.FALSE) {
+                kakaoAccount.putString("birthyear", origin.getBirthyear());
+              }
+              kakaoAccount
+                  .putBoolean("birthyearNeedsAgreement", toBool(origin.getBirthyearNeedsAgreement()));
             }
-            kakaoAccount
-                .putBoolean("birthyearNeedsAgreement", toBool(origin.getBirthyearNeedsAgreement()));
-          }
 
-          if (origin.getGenderNeedsAgreement() != null) {
-            if (origin.getGenderNeedsAgreement() == Boolean.FALSE && origin.getGender() != null) {
-              kakaoAccount.putString("gender", origin.getGender().toString());
+            if (origin.getGenderNeedsAgreement() != null) {
+              if (origin.getGenderNeedsAgreement() == Boolean.FALSE && origin.getGender() != null) {
+                kakaoAccount.putString("gender", origin.getGender().toString());
+              }
+              kakaoAccount
+                  .putBoolean("genderNeedsAgreement", toBool(origin.getGenderNeedsAgreement()));
             }
-            kakaoAccount
-                .putBoolean("genderNeedsAgreement", toBool(origin.getGenderNeedsAgreement()));
-          }
 
-          if (origin.getCiNeedsAgreement() != null) {
-            if (origin.getCiNeedsAgreement() == Boolean.FALSE && origin.getCi() != null) {
-              kakaoAccount.putString("ci", origin.getCi().toString());
+            if (origin.getCiNeedsAgreement() != null) {
+              if (origin.getCiNeedsAgreement() == Boolean.FALSE && origin.getCi() != null) {
+                kakaoAccount.putString("ci", origin.getCi().toString());
+              }
+              kakaoAccount.putString("ciAuthenticatedAt", format(origin.getCiAuthenticatedAt()));
+              kakaoAccount.putBoolean("ciNeedsAgreement", toBool(origin.getCiNeedsAgreement()));
             }
-            kakaoAccount.putString("ciAuthenticatedAt", format(origin.getCiAuthenticatedAt()));
-            kakaoAccount.putBoolean("ciNeedsAgreement", toBool(origin.getCiNeedsAgreement()));
-          }
 
-          if (origin.getLegalBirthDateNeedsAgreement() != null) {
-            if (origin.getLegalBirthDateNeedsAgreement() == Boolean.FALSE) {
-              kakaoAccount.putString("legalBirthDate", origin.getLegalBirthDate());
+            if (origin.getLegalBirthDateNeedsAgreement() != null) {
+              if (origin.getLegalBirthDateNeedsAgreement() == Boolean.FALSE) {
+                kakaoAccount.putString("legalBirthDate", origin.getLegalBirthDate());
+              }
+              kakaoAccount.putBoolean("legalBirthDateNeedsAgreement",
+                  toBool(origin.getLegalBirthDateNeedsAgreement()));
             }
-            kakaoAccount.putBoolean("legalBirthDateNeedsAgreement",
-                toBool(origin.getLegalBirthDateNeedsAgreement()));
-          }
 
-          if (origin.getLegalGenderNeedsAgreement() != null) {
-            if (origin.getLegalGenderNeedsAgreement() == Boolean.FALSE
-                && origin.getLegalGender() != null) {
-              kakaoAccount.putString("legalGender", origin.getLegalGender().toString());
+            if (origin.getLegalGenderNeedsAgreement() != null) {
+              if (origin.getLegalGenderNeedsAgreement() == Boolean.FALSE
+                  && origin.getLegalGender() != null) {
+                kakaoAccount.putString("legalGender", origin.getLegalGender().toString());
+              }
+              kakaoAccount
+                  .putBoolean("legalGenderNeedsAgreement",
+                      toBool(origin.getLegalGenderNeedsAgreement()));
             }
-            kakaoAccount
-                .putBoolean("legalGenderNeedsAgreement",
-                    toBool(origin.getLegalGenderNeedsAgreement()));
-          }
 
-          if (origin.getLegalNameNeedsAgreement() != null) {
-            if (origin.getLegalNameNeedsAgreement() == Boolean.FALSE) {
-              kakaoAccount.putString("legalName", origin.getLegalName());
+            if (origin.getLegalNameNeedsAgreement() != null) {
+              if (origin.getLegalNameNeedsAgreement() == Boolean.FALSE) {
+                kakaoAccount.putString("legalName", origin.getLegalName());
+              }
+              kakaoAccount
+                  .putBoolean("legalNameNeedsAgreement", toBool(origin.getLegalNameNeedsAgreement()));
             }
-            kakaoAccount
-                .putBoolean("legalNameNeedsAgreement", toBool(origin.getLegalNameNeedsAgreement()));
-          }
 
-          if (origin.getAgeRangeNeedsAgreement() != null) {
-            if (origin.getAgeRangeNeedsAgreement() == Boolean.FALSE
-                && origin.getAgeRange() != null) {
-              kakaoAccount.putString("ageRange", origin.getAgeRange().toString());
+            if (origin.getAgeRangeNeedsAgreement() != null) {
+              if (origin.getAgeRangeNeedsAgreement() == Boolean.FALSE
+                  && origin.getAgeRange() != null) {
+                kakaoAccount.putString("ageRange", origin.getAgeRange().toString());
+              }
+              kakaoAccount
+                  .putBoolean("ageRangeNeedsAgreement", toBool(origin.getAgeRangeNeedsAgreement()));
             }
-            kakaoAccount
-                .putBoolean("ageRangeNeedsAgreement", toBool(origin.getAgeRangeNeedsAgreement()));
-          }
 
-          if (origin.getPhoneNumberNeedsAgreement() != null) {
-            if (origin.getPhoneNumberNeedsAgreement() == Boolean.FALSE) {
-              kakaoAccount.putString("phoneNumber", origin.getPhoneNumber());
+            if (origin.getPhoneNumberNeedsAgreement() != null) {
+              if (origin.getPhoneNumberNeedsAgreement() == Boolean.FALSE) {
+                kakaoAccount.putString("phoneNumber", origin.getPhoneNumber());
+              }
+              kakaoAccount
+                  .putBoolean("phoneNumberNeedsAgreement",
+                      toBool(origin.getPhoneNumberNeedsAgreement()));
             }
-            kakaoAccount
-                .putBoolean("phoneNumberNeedsAgreement",
-                    toBool(origin.getPhoneNumberNeedsAgreement()));
-          }
 
-          if (origin.getProfileNeedsAgreement() != null) {
-            if (origin.getProfileNeedsAgreement() == Boolean.FALSE) {
-              WritableMap profile = Arguments.createMap();
-              profile.putString("nickname", origin.getProfile().getNickname());
-              profile.putString("profileImageUrl", origin.getProfile().getProfileImageUrl());
-              profile.putString("thumbnailImageUrl", origin.getProfile().getThumbnailImageUrl());
-              kakaoAccount.putMap("profile", profile);
+            if (origin.getProfileNeedsAgreement() != null) {
+              if (origin.getProfileNeedsAgreement() == Boolean.FALSE) {
+                WritableMap profile = Arguments.createMap();
+                profile.putString("nickname", origin.getProfile().getNickname());
+                profile.putString("profileImageUrl", origin.getProfile().getProfileImageUrl());
+                profile.putString("thumbnailImageUrl", origin.getProfile().getThumbnailImageUrl());
+                kakaoAccount.putMap("profile", profile);
+              }
+              kakaoAccount
+                  .putBoolean("profileNeedsAgreement", toBool(origin.getProfileNeedsAgreement()));
             }
-            kakaoAccount
-                .putBoolean("profileNeedsAgreement", toBool(origin.getProfileNeedsAgreement()));
           }
-
           map.putMap("kakaoAccount", kakaoAccount);
         }
 
