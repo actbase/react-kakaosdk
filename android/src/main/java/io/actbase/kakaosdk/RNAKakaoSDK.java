@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -21,6 +22,8 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.kakao.sdk.common.KakaoSdk;
 import com.kakao.sdk.common.model.AuthError;
+import com.kakao.sdk.common.util.KakaoCustomTabsClient;
+import com.kakao.sdk.talk.TalkApiClient;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.Account;
 
@@ -406,6 +409,13 @@ public class RNAKakaoSDK extends ReactContextBaseJavaModule {
       }
       return null;
     });
+  }
+
+  @ReactMethod
+  public void openChannel(String url, final Promise promise) {
+    Uri talkUrl = TalkApiClient.getInstance().addChannelUrl(url);
+    KakaoCustomTabsClient.INSTANCE.openWithDefault(getReactApplicationContext().getCurrentActivity(), talkUrl);
+    promise.resolve(true);
   }
 
   public String getKeyHash(final Context context) {
