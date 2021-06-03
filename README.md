@@ -11,7 +11,7 @@
 
 | iOS                                                                   | Android                                                                   | Web                                                                    |
 | --------------------------------------------------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| [2.5.0](https://developers.kakao.com/docs/latest/ko/sdk-download/ios) | [2.5.0](https://developers.kakao.com/docs/latest/ko/sdk-download/android) | [1.39.14](https://developers.kakao.com/docs/latest/ko/sdk-download/js) |
+| [2.5.1](https://developers.kakao.com/docs/latest/ko/sdk-download/ios) | [2.5.0](https://developers.kakao.com/docs/latest/ko/sdk-download/android) | [1.39.14](https://developers.kakao.com/docs/latest/ko/sdk-download/js) |
 
 ### 처음 설치 시 주의 사항 (React-Native 만)
 
@@ -50,7 +50,24 @@ $ npx @actbase/react-kakaosdk
 
 웹이나 앱을 구분 한 뒤 알아서 wizard가 실행됩니다.
 
+### iOS
+
+npx를 이용해 kakaosdk모듈을 설치 진행 하고 kakaoApiKey 입력을 하시면 자동으로 추가가됩니다.
+
+### Android
+
 ## 사용방법
+
+Projec build.gradle 안에 다음과 같이 android sdk repository를 추가해주세요.
+
+```
+allprojects {
+    repositories {
+
+        maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' }
+    }
+}
+```
 
 ```js
 import KakaoSDK from '@actbase/react-kakaosdk';
@@ -89,6 +106,8 @@ const profile = await KakaoSDK.getProfile();
 
 # Changes
 
+- 0.9.5
+  - 카카오 채널 기능 추가
 - 0.9.4
   - 안드로이드 간혈적 kakaoAccount null 일 경우 처리
 - 0.9.3

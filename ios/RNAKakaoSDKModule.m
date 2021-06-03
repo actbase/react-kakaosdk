@@ -12,5 +12,7 @@ RCT_EXTERN_METHOD(getProfile:(RCTPromiseResolveBlock *)resolve rejecter:(RCTProm
 RCT_EXTERN_METHOD(loginWithNewScopes:(NSArray *)scopes
                   resolver:(RCTPromiseResolveBlock *)resolve
                   rejecter:(RCTPromiseRejectBlock *)reject);
-
+RCT_EXTERN_METHOD(openChannel:(NSString *)channelId
+                  resolver:(RCTPromiseResolveBlock *)resolve
+                  rejecter:(RCTPromiseRejectBlock *)reject);
 @end

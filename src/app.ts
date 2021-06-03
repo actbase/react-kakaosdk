@@ -95,6 +95,10 @@ export const getProfile = async (): Promise<ProfileType> => {
   return <ProfileType>await exec();
 };
 
+export const openChannel: (id: string) => Promise<any> = async (_id: string) =>{
+  return false;
+}
+
 const app: KakaoSDK = {
   init,
   isInitialized,
@@ -104,6 +108,7 @@ const app: KakaoSDK = {
   loginWithNewScopes,
   logout,
   unlink,
+  openChannel,
 };
 
 export default app;

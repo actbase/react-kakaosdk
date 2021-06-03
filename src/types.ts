@@ -85,4 +85,5 @@ export interface KakaoSDK {
   loginWithNewScopes: (scopes: string[]) => Promise<AccessTokenType | undefined>;
   logout: () => Promise<void>;
   unlink: () => Promise<void>;
+  openChannel: (id: string) => Promise<any>;
 }

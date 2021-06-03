@@ -9,6 +9,7 @@ import Foundation
 import KakaoSDKCommon
 import KakaoSDKAuth
 import KakaoSDKUser
+import SafariServices
 
 @objc(RNAKakaoSDK)
 public class RNAKakaoSDK: NSObject {
@@ -305,5 +306,22 @@ public class RNAKakaoSDK: NSObject {
         }
     }
 
+    @objc(openChannel:resolver:rejecter:)
+    func openChannel(_ channelId: String,
+                     resolver resolve: @escaping RCTPromiseResolveBlock,
+                     rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        var safariViewController : SFSafariViewController = SFSafariViewController(url: TalkApi.shared.makeUrlForAddChannel(channelPublicId:channelId)!)
+
+        guard (safariViewController != nil) else { return }
+
+        DispatchQueue.main.async {
+            safariViewController.modalTransitionStyle = .crossDissolve
+            safariViewController.modalPresentationStyle = .overCurrentContext
+            UIApplication.shared.keyWindow?.rootViewController?.present(safariViewController, animated: true) {
+                print("카카오톡 채널 추가 연결 페이지 실행 성공")
+            }
+            resolve(true)
+        }
+    }
 
 }

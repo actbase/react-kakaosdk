@@ -76,6 +76,10 @@ export const getProfile: () => Promise<ProfileType> = async () => {
   return <ProfileType>valueToSnakeCase(result);
 };
 
+export const openChannel: (id: string) => Promise<any> = async (id: string) =>{
+  return await RNAKakaoSDK.openChannel(id);
+}
+
 const app: KakaoSDK = {
   init,
   isInitialized,
@@ -85,6 +89,7 @@ const app: KakaoSDK = {
   loginWithNewScopes,
   logout,
   unlink,
+  openChannel,
 };
 
 export default app;
