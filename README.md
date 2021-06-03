@@ -106,7 +106,9 @@ const profile = await KakaoSDK.getProfile();
 
 # Changes
 
-- 0.9.5
+- 0.9.7
+  - 카카오 채널 기능 버그수정
+- 0.9.6
   - 카카오 채널 기능 추가
 - 0.9.4
   - 안드로이드 간혈적 kakaoAccount null 일 경우 처리

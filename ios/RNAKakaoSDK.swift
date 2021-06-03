@@ -10,6 +10,7 @@ import KakaoSDKCommon
 import KakaoSDKAuth
 import KakaoSDKUser
 import SafariServices
+import KakaoSDKTalk
 
 @objc(RNAKakaoSDK)
 public class RNAKakaoSDK: NSObject {
