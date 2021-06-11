@@ -58,7 +58,7 @@ npx를 이용해 kakaosdk모듈을 설치 진행 하고 kakaoApiKey 입력을 �
 
 ## 사용방법
 
-Projec build.gradle 안에 다음과 같이 android sdk repository를 추가해주세요.
+Project build.gradle 안에 다음과 같이 android sdk repository를 추가해주세요.
 
 ```
 allprojects {
