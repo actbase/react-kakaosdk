@@ -57,6 +57,8 @@ $ npx @actbase/react-kakaosdk
    + <key>KAKAO_APP_KEY</key>
    + <string>{NATIVE_APP_KEY}</string>
    ```
+   
+ 다른 수정사항은 npx를 이용해 kakaosdk모듈을 설치 진행 하고 kakaoApiKey 입력을 하시면 자동으로 추가가됩니다.
 
 ### Android
 
