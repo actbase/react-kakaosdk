@@ -53,12 +53,13 @@ $ npx @actbase/react-kakaosdk
 ### iOS
 
 [공식문서 - 개발 프로젝트 설정](https://developers.kakao.com/docs/latest/ko/getting-started/sdk-ios-v1) 을 참고하여 `info.plist` 의 아래`NATIVE_APP_KEY` 문구를 잘 확인하시여 본인의 Kakao App Key로 변경해주세요.
-   ```
-   + <key>KAKAO_APP_KEY</key>
-   + <string>{NATIVE_APP_KEY}</string>
-   ```
-   
- 다른 수정사항은 npx를 이용해 kakaosdk모듈을 설치 진행 하고 kakaoApiKey 입력을 하시면 자동으로 추가가됩니다.
+
+```
++ <key>KAKAO_APP_KEY</key>
++ <string>{NATIVE_APP_KEY}</string>
+```
+
+다른 수정사항은 npx를 이용해 kakaosdk모듈을 설치 진행 하고 kakaoApiKey 입력을 하시면 자동으로 추가가됩니다.
 
 ### Android
 
@@ -112,6 +113,8 @@ const profile = await KakaoSDK.getProfile();
 
 # Changes
 
+- 0.9.8
+  iOS Kakao Login 버그수정
 - 0.9.7
   - 카카오 채널 기능 버그수정
 - 0.9.6
