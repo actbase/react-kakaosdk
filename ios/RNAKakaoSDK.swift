@@ -69,7 +69,7 @@ public class RNAKakaoSDK: NSObject {
                             "refreshToken": oauthToken!.refreshToken,
                             "accessTokenExpiresAt": dateFormatter.string(from: oauthToken!.expiredAt),
                             "refreshTokenExpiresAt": dateFormatter.string(from: oauthToken!.refreshTokenExpiredAt),
-                            "scopes": oauthToken?.scopes!,
+                            "scopes": oauthToken?.scopes,
                         ])
                     } catch let e {
                         print(e);
@@ -89,7 +89,7 @@ public class RNAKakaoSDK: NSObject {
                             "refreshToken": oauthToken!.refreshToken,
                             "accessTokenExpiresAt": dateFormatter.string(from: oauthToken!.expiredAt),
                             "refreshTokenExpiresAt": dateFormatter.string(from: oauthToken!.refreshTokenExpiredAt),
-                            "scopes": oauthToken?.scopes!,
+                            "scopes": oauthToken?.scopes,
                         ])
                     } catch let e {
                         print(e);
