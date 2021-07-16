@@ -1,5 +1,3 @@
-import {openChannelChat} from "./app";
-
 export interface ProfileType {
   connected_at: string;
   id: number;
