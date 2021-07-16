@@ -80,6 +80,10 @@ export const openChannel: (id: string) => Promise<any> = async (id: string) =>{
   return await RNAKakaoSDK.openChannel(id);
 }
 
+export const openChannelChat: (id: string) => Promise<any> = async (id: string) =>{
+  return await RNAKakaoSDK.openChannelChat(id);
+}
+
 const app: KakaoSDK = {
   init,
   isInitialized,
@@ -90,6 +94,7 @@ const app: KakaoSDK = {
   logout,
   unlink,
   openChannel,
+  openChannelChat,
 };
 
 export default app;

@@ -1,3 +1,5 @@
+import {openChannelChat} from "./app";
+
 export interface ProfileType {
   connected_at: string;
   id: number;
@@ -86,4 +88,5 @@ export interface KakaoSDK {
   logout: () => Promise<void>;
   unlink: () => Promise<void>;
   openChannel: (id: string) => Promise<any>;
+  openChannelChat: (id: string) => Promise<any>;
 }

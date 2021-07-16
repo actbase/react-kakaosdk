@@ -418,6 +418,13 @@ public class RNAKakaoSDK extends ReactContextBaseJavaModule {
     promise.resolve(true);
   }
 
+  @ReactMethod
+  public void openChannelChat(String url, final Promise promise) {
+    Uri talkUrl = TalkApiClient.getInstance().channelChatUrl(url);
+    KakaoCustomTabsClient.INSTANCE.openWithDefault(getReactApplicationContext().getCurrentActivity(), talkUrl);
+    promise.resolve(true);
+  }
+
   public String getKeyHash(final Context context) {
     PackageInfo packageInfo = null;
     try {

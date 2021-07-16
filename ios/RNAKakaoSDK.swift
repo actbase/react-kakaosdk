@@ -312,7 +312,6 @@ public class RNAKakaoSDK: NSObject {
                      resolver resolve: @escaping RCTPromiseResolveBlock,
                      rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         var safariViewController : SFSafariViewController = SFSafariViewController(url: TalkApi.shared.makeUrlForAddChannel(channelPublicId:channelId)!)
-
         guard (safariViewController != nil) else { return }
 
         DispatchQueue.main.async {
@@ -320,6 +319,23 @@ public class RNAKakaoSDK: NSObject {
             safariViewController.modalPresentationStyle = .overCurrentContext
             UIApplication.shared.keyWindow?.rootViewController?.present(safariViewController, animated: true) {
                 print("카카오톡 채널 추가 연결 페이지 실행 성공")
+            }
+            resolve(true)
+        }
+    }
+
+    @objc(openChannelChat:resolver:rejecter:)
+    func openChannelChat(_ channelId: String,
+                     resolver resolve: @escaping RCTPromiseResolveBlock,
+                     rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        var safariViewController : SFSafariViewController = SFSafariViewController(url: TalkApi.shared.makeUrlForChannelChat(channelPublicId:channelId)!)
+        guard (safariViewController != nil) else { return }
+
+        DispatchQueue.main.async {
+            safariViewController.modalTransitionStyle = .crossDissolve
+            safariViewController.modalPresentationStyle = .overCurrentContext
+            UIApplication.shared.keyWindow?.rootViewController?.present(safariViewController, animated: true) {
+                print("Kakao Talk Channel chat 연결 페이지 실행 성공")
             }
             resolve(true)
         }

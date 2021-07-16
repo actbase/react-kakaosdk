@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.license        = package['license']
 
   s.platform       = :ios, "11.0"
-  s.framework      = ['UIKit', 'WebKit']
+  s.framework      = 'MobileCoreServices'
   s.requires_arc   = true
 
   s.source         = { :git => package['repository']['url'] }
@@ -27,7 +27,14 @@ Pod::Spec.new do |s|
   s.dependency 'React-Core'
   s.dependency 'KakaoSDK', '~> 2.5.0'
 
-  s.xcconfig = { "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES" => "YES" }
+  s.xcconfig = {
+    "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES" => "YES",
+    "EMBEDDED_CONTENT_CONTAINS_SWIFT" => "YES"
+  }
+  s.pod_target_xcconfig = {
+    "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES" => "YES",
+    "EMBEDDED_CONTENT_CONTAINS_SWIFT" => "YES"
+  }
 #  s.pod_target_xcconfig = { 'SWIFT_OBJC_BRIDGING_HEADER' => '${PODS_TARGET_SRCROOT}/ios/RNAKakaoSDK-Bridging-Header.h' }
 end
 
