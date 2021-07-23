@@ -112,6 +112,8 @@ const profile = await KakaoSDK.getProfile();
 프로젝트 문의 혹은 제휴가 필요한 경우 project@actbase.io로 연락주세요.
 
 # Changes
+- 0.9.11
+  - 안드로이드 간혈적 에러 처리
 - 0.9.10
   - 카카오 웹 버전에서도 openChannel 사용가능.
   - openChannelChat으로 즉시 채팅 열수있음.

@@ -395,9 +395,11 @@ public class RNAKakaoSDK extends ReactContextBaseJavaModule {
         {
           WritableMap properties = Arguments.createMap();
           Map<String, String> origin = user.getProperties();
-          for (String key : origin.keySet()) {
-            if (origin.get(key) != null) {
-              properties.putString(key, origin.get(key));
+          if (origin != null) {
+            for (String key : origin.keySet()) {
+              if (origin.get(key) != null) {
+                properties.putString(key, origin.get(key));
+              }
             }
           }
           map.putMap("properties", properties);
