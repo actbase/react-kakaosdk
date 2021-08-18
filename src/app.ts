@@ -40,7 +40,7 @@ export const login = async () => {
         expires_in: output?.expires_in,
         refresh_token: output?.refresh_token,
         refresh_token_expires_in: output?.refresh_token_expires_in,
-        scopes: output?.scope.split(' '),
+        scopes: output?.scope?.split(' '),
         token_type: output.token_type,
     };
 };
@@ -55,7 +55,7 @@ export const loginWithNewScopes = async (scopes: string[]) => {
         expires_in: output?.expires_in,
         refresh_token: output?.refresh_token,
         refresh_token_expires_in: output?.refresh_token_expires_in,
-        scopes: output?.scope.split(' '),
+        scopes: output?.scope?.split(' '),
         token_type: output.token_type,
     };
 };
@@ -83,7 +83,7 @@ export const getAccessToken = async () => {
         expires_in: output?.expires_in,
         refresh_token: output?.refresh_token,
         refresh_token_expires_in: output?.refresh_token_expires_in,
-        scopes: output?.scope.split(' '),
+        scopes: output?.scope?.split(' '),
         token_type: output.token_type,
     };
 };
