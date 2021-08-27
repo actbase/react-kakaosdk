@@ -63,26 +63,23 @@ export const unlink = async () => {
 export const getAccessToken = async () => {
   const result = await RNAKakaoSDK.getAccessToken();
   return {
-    access_token: result?.accessToken,
-    refresh_token: result?.refreshToken,
-    scopes: result?.scopes,
-    expires_in: dateToSeconds(result?.accessTokenExpiresAt),
-    refresh_token_expires_in: dateToSeconds(result?.refreshTokenExpiresAt),
+    id: result.id,
+    expires_in: dateToSeconds(result?.expiresIn),
   };
 };
 
 export const getProfile: () => Promise<ProfileType> = async () => {
   const result = await RNAKakaoSDK.getProfile();
-  return <ProfileType>valueToSnakeCase(result);
+  return valueToSnakeCase(result) as ProfileType;
 };
 
 export const openChannel: (id: string) => Promise<any> = async (id: string) =>{
   return await RNAKakaoSDK.openChannel(id);
-}
+};
 
 export const openChannelChat: (id: string) => Promise<any> = async (id: string) =>{
   return await RNAKakaoSDK.openChannelChat(id);
-}
+};
 
 const app: KakaoSDK = {
   init,

@@ -41,10 +41,10 @@ repositories {
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
-    implementation "com.kakao.sdk:v2-user:2.5.0"
-    implementation "com.kakao.sdk:v2-talk:2.5.0"
-    implementation "com.kakao.sdk:v2-story:2.5.0"
-    implementation "com.kakao.sdk:v2-link:2.5.0"
-    implementation "com.kakao.sdk:v2-navi:2.5.0"
+    implementation "com.kakao.sdk:v2-user:2.6.0"
+    implementation "com.kakao.sdk:v2-talk:2.6.0"
+    implementation "com.kakao.sdk:v2-story:2.6.0"
+    implementation "com.kakao.sdk:v2-link:2.6.0"
+    implementation "com.kakao.sdk:v2-navi:2.6.0"
 }
 

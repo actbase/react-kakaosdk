@@ -264,8 +264,8 @@ public class RNAKakaoSDK extends ReactContextBaseJavaModule {
         }
 
         WritableMap map = Arguments.createMap();
-        map.putDouble("id", tokenInfo.getId());
-        map.putDouble("expiresIn", tokenInfo.getExpiresIn());
+        map.putLong("id", tokenInfo.getId());
+        map.putLong("expiresIn", tokenInfo.getExpiresIn());
         promise.resolve(map);
 
       } catch (Throwable ex) {
@@ -285,7 +285,7 @@ public class RNAKakaoSDK extends ReactContextBaseJavaModule {
         }
 
         WritableMap map = Arguments.createMap();
-        map.putDouble("id", user.getId());
+        map.putLong("id", user.getId());
         map.putString("connectedAt", format(user.getConnectedAt()));
 
         {
