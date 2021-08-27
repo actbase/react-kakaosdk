@@ -76,10 +76,15 @@ export interface AccessTokenType {
   token_type?: string;
 }
 
+export interface AccessTokenInfo {
+  id: number;
+  expires_in: number;
+}
+
 export interface KakaoSDK {
   init: (appKey: string) => Promise<void>;
   isInitialized: () => Promise<boolean>;
-  getAccessToken: () => Promise<AccessTokenType | undefined>;
+  getAccessToken: () => Promise<AccessTokenInfo | undefined>;
   getProfile: () => Promise<ProfileType>;
   login: () => Promise<AccessTokenType | undefined>;
   loginWithNewScopes: (scopes: string[]) => Promise<AccessTokenType | undefined>;

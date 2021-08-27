@@ -10,3 +10,4 @@
 .watchmanconfig
 package-lock.json
 .next
+android/local.properties

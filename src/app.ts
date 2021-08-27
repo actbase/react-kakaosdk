@@ -1,9 +1,10 @@
 import {KakaoSDK, ProfileType} from './types';
 
+declare const global: Window & typeof globalThis;
+
 const getKakaoSDK = (): Promise<any> => {
     return new Promise((resolve, reject) => {
         if (typeof window === 'undefined') reject({message: 'unsupported platform'});
-        // @ts-ignore
         const kakaoSDK = global.Kakao;
         if (kakaoSDK) {
             resolve(kakaoSDK);
@@ -15,7 +16,6 @@ const getKakaoSDK = (): Promise<any> => {
         jsapi.src = 'https://developers.kakao.com/sdk/js/kakao.min.js';
         const s = document.getElementsByTagName('script')[0];
         s?.parentNode?.insertBefore(jsapi, s);
-        // @ts-ignore
         jsapi.onload = () => resolve(global.Kakao);
         jsapi.onabort = jsapi.onerror = reject;
     });
@@ -79,12 +79,8 @@ export const getAccessToken = async () => {
     const Kakao = await getKakaoSDK();
     const output: any = Kakao.Auth.getAccessToken();
     return {
-        access_token: output?.access_token,
+        id: output?.id,
         expires_in: output?.expires_in,
-        refresh_token: output?.refresh_token,
-        refresh_token_expires_in: output?.refresh_token_expires_in,
-        scopes: output?.scope?.split(' '),
-        token_type: output.token_type,
     };
 };
 
@@ -92,7 +88,7 @@ export const getProfile = async (): Promise<ProfileType> => {
     const Kakao = await getKakaoSDK();
     const url = '/v2/user/me';
     const exec = () => new Promise((success, fail) => Kakao.API.request({url, success, fail}));
-    return <ProfileType>await exec();
+    return await exec() as ProfileType;
 };
 
 export const openChannel: (id: string) => Promise<any> = async (channelPublicId: string) => {
