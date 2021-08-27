@@ -112,6 +112,9 @@ const profile = await KakaoSDK.getProfile();
 프로젝트 문의 혹은 제휴가 필요한 경우 project@actbase.io로 연락주세요.
 
 # Changes
+- 0.9.14
+  - 사용하지 않는 명령 제거
+  - typing 업데이트
 - 0.9.12
   - 웹버전 scope없을때 장애 처리
 - 0.9.11
