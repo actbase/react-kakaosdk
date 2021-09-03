@@ -176,7 +176,19 @@ public class RNAKakaoSDK extends ReactContextBaseJavaModule {
       } catch (Throwable ex) {
         if (ex instanceof AuthError) {
           AuthError authError = (AuthError) ex;
-          if (authError.getStatusCode() == 302) {
+          if (authError.getStatusCode() == 401) {
+            // invalid android_key_hash or ios_bundle_id or web_site_url.
+            try {
+              ClipboardManager clipboard = (ClipboardManager) context
+                  .getSystemService(Context.CLIPBOARD_SERVICE);
+              ClipData clip = ClipData.newPlainText("Android Key Hash", getKeyHash());
+              clipboard.setPrimaryClip(clip);
+              Toast.makeText(context, "Copy to Keyhash (clipboard)", Toast.LENGTH_SHORT).show();
+            } catch (Exception ex2) {
+              ex2.printStackTrace();
+            }
+            promise.reject(String.valueOf(authError.getStatusCode()), getKeyHash(), ex);
+          } else if (authError.getStatusCode() == 302) {
             // KakaoTalk is installed but not connected to Kakao account.
             loginWithKakaoAccount(promise);
           } else {
@@ -296,7 +308,8 @@ public class RNAKakaoSDK extends ReactContextBaseJavaModule {
               if (origin.getEmailNeedsAgreement() == Boolean.FALSE) {
                 kakaoAccount.putString("email", origin.getEmail());
               }
-              kakaoAccount.putBoolean("emailNeedsAgreement", toBool(origin.getEmailNeedsAgreement()));
+              kakaoAccount.putBoolean("emailNeedsAgreement",
+                  toBool(origin.getEmailNeedsAgreement()));
               kakaoAccount.putBoolean("isEmailValid", toBool(origin.isEmailValid()));
               kakaoAccount.putBoolean("isEmailVerified", toBool(origin.isEmailVerified()));
             }
@@ -314,7 +327,8 @@ public class RNAKakaoSDK extends ReactContextBaseJavaModule {
                 kakaoAccount.putString("birthyear", origin.getBirthyear());
               }
               kakaoAccount
-                  .putBoolean("birthyearNeedsAgreement", toBool(origin.getBirthyearNeedsAgreement()));
+                  .putBoolean("birthyearNeedsAgreement",
+                      toBool(origin.getBirthyearNeedsAgreement()));
             }
 
             if (origin.getGenderNeedsAgreement() != null) {
@@ -356,7 +370,8 @@ public class RNAKakaoSDK extends ReactContextBaseJavaModule {
                 kakaoAccount.putString("legalName", origin.getLegalName());
               }
               kakaoAccount
-                  .putBoolean("legalNameNeedsAgreement", toBool(origin.getLegalNameNeedsAgreement()));
+                  .putBoolean("legalNameNeedsAgreement",
+                      toBool(origin.getLegalNameNeedsAgreement()));
             }
 
             if (origin.getAgeRangeNeedsAgreement() != null) {
@@ -416,14 +431,16 @@ public class RNAKakaoSDK extends ReactContextBaseJavaModule {
   @ReactMethod
   public void openChannel(String url, final Promise promise) {
     Uri talkUrl = TalkApiClient.getInstance().addChannelUrl(url);
-    KakaoCustomTabsClient.INSTANCE.openWithDefault(getReactApplicationContext().getCurrentActivity(), talkUrl);
+    KakaoCustomTabsClient.INSTANCE.openWithDefault(
+        getReactApplicationContext().getCurrentActivity(), talkUrl);
     promise.resolve(true);
   }
 
   @ReactMethod
   public void openChannelChat(String url, final Promise promise) {
     Uri talkUrl = TalkApiClient.getInstance().channelChatUrl(url);
-    KakaoCustomTabsClient.INSTANCE.openWithDefault(getReactApplicationContext().getCurrentActivity(), talkUrl);
+    KakaoCustomTabsClient.INSTANCE.openWithDefault(
+        getReactApplicationContext().getCurrentActivity(), talkUrl);
     promise.resolve(true);
   }
 
