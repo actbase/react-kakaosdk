@@ -112,6 +112,8 @@ const profile = await KakaoSDK.getProfile();
 프로젝트 문의 혹은 제휴가 필요한 경우 project@actbase.io로 연락주세요.
 
 # Changes
+- 0.9.18
+  - 액트베이스(유) 오픈소스 기준에 맞춰서 수정
 - 0.9.17
   - 카카오 로그인 시 keyhash 없는경우 클립보드에 넣어주는 기능 장애 처리
 - 0.9.16
