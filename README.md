@@ -59,7 +59,31 @@ $ npx @actbase/react-kakaosdk
 + <string>{NATIVE_APP_KEY}</string>
 ```
 
+AppDelegate.m (++ 된 부분 추가)
+
+```
+#import "WithKakaoSDK.h"
+
+- (BOOL)application:(UIApplication *)app
+openURL:(NSURL *)url
+options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+{
+...
+
+++ if ([WithKakaoSDK isKakaoTalkLoginUrl:url]) return [WithKakaoSDK handleOpenUrl:url];
+[[FBSDKApplicationDelegate sharedInstance] application:app
+openURL:url
+options:options];
+
+...
+
+return NO;
+}
+```
+
 다른 수정사항은 npx를 이용해 kakaosdk모듈을 설치 진행 하고 kakaoApiKey 입력을 하시면 자동으로 추가가됩니다.
+
+
 
 ### Android
 
@@ -80,6 +104,7 @@ allprojects {
 import KakaoSDK from '@actbase/react-kakaosdk';
 
 // 카카오 로그인 시 처리부문
+await KakaoSDK.init(NATIVE_APP_KEY);
 const tokens = await KakaoSDK.login();
 ```
 
@@ -96,11 +121,6 @@ import KakaoSDK from '@actbase/react-kakaosdk';
 
 // 카카오 로그아웃시 처리
 await KakaoSDK.logout();
-
-// 카카오 액세스 토큰 가져오는 명령, 로그인 시 자동으로 로그아웃 후 처리됨에 따라
-// 별도로 값만 가져올 경우 사용.
-// 로직 변경으로 인해 해당 현재 토큰의 대한 정보(아이디, 만료일)만 가져옵니다.
-const accessToken = await KakaoSDK.getAccessToken();
 
 // 카카오 회원정보 가져오기
 const profile = await KakaoSDK.getProfile();
