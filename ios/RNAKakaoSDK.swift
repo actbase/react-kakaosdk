@@ -100,6 +100,34 @@ public class RNAKakaoSDK: NSObject {
         }
     }
 
+    @objc(manualLogin:rejecter:)
+    func manualLogin(_ resolve: @escaping RCTPromiseResolveBlock,
+               rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+
+        DispatchQueue.main.async {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss";
+                UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
+                    do {
+                        if let error = error {
+                            throw error;
+                        }
+
+                        resolve([
+                            "accessToken": oauthToken!.accessToken,
+                            "refreshToken": oauthToken!.refreshToken,
+                            "accessTokenExpiresAt": dateFormatter.string(from: oauthToken!.expiredAt),
+                            "refreshTokenExpiresAt": dateFormatter.string(from: oauthToken!.refreshTokenExpiredAt),
+                            "scopes": oauthToken?.scopes,
+                        ])
+                    } catch let e {
+                        print(e);
+                        reject("actbase_kakao_sdk", e.localizedDescription, nil)
+                    }
+                }
+        }
+    }
+
     @objc(loginWithNewScopes:resolver:rejecter:)
     func loginWithNewScopes(_ scopedata: NSArray,
                resolver resolve: @escaping RCTPromiseResolveBlock,

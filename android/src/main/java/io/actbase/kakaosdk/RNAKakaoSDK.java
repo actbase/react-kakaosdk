@@ -206,6 +206,11 @@ public class RNAKakaoSDK extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void manualLogin(final Promise promise) {
+      loginWithKakaoAccount(promise);
+  }
+
+  @ReactMethod
   public void loginWithNewScopes(ReadableArray permissions, final Promise promise) {
     List<String> perms = new ArrayList<String>();
     for (int i = 0; i < permissions.size(); i++) {

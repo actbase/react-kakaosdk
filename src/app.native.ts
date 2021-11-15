@@ -41,6 +41,17 @@ export const login = async () => {
   };
 };
 
+export const manualLogin = async () => {
+  const result = await RNAKakaoSDK.manualLogin();
+  return {
+    access_token: result?.accessToken,
+    refresh_token: result?.refreshToken,
+    scopes: result?.scopes,
+    expires_in: dateToSeconds(result?.accessTokenExpiresAt),
+    refresh_token_expires_in: dateToSeconds(result?.refreshTokenExpiresAt),
+  };
+};
+
 export const loginWithNewScopes = async (scopes: string[]) => {
   const result = await RNAKakaoSDK.loginWithNewScopes(scopes);
   return {
@@ -87,6 +98,7 @@ const app: KakaoSDK = {
   getAccessToken,
   getProfile,
   login,
+  manualLogin,
   loginWithNewScopes,
   logout,
   unlink,
