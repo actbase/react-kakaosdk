@@ -132,6 +132,8 @@ const profile = await KakaoSDK.getProfile();
 프로젝트 문의 혹은 제휴가 필요한 경우 project@actbase.io로 연락주세요.
 
 # Changes
+- 0.9.19
+  - 카카오 iOS SDK 장애로 버전 fixed 처리
 - 0.9.18
   - 액트베이스(유) 오픈소스 기준에 맞춰서 수정
 - 0.9.17
