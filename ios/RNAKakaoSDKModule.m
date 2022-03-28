@@ -16,4 +16,7 @@ RCT_EXTERN_METHOD(loginWithNewScopes:(NSArray *)scopes
 RCT_EXTERN_METHOD(openChannel:(NSString *)channelId
                   resolver:(RCTPromiseResolveBlock *)resolve
                   rejecter:(RCTPromiseRejectBlock *)reject);
+RCT_EXTERN_METHOD(openChannelChat:(NSString *)channelId
+                  resolver:(RCTPromiseResolveBlock *)resolve
+                  rejecter:(RCTPromiseRejectBlock *)reject);
 @end
