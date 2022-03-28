@@ -211,7 +211,9 @@ const start = async () => {
 
         console.log(' > 저장 완료.');
       }
-
+    }
+    else{
+      console.log('iOS 설치 생략');
     }
 
     console.log('Android 설치 시작');
