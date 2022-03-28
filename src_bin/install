@@ -94,115 +94,126 @@ const start = async () => {
     const keys = input ? input.split(';') : [];
     console.log('iOS 설치 시작');
 
-    let name = (await readDir(path + '/ios'))?.filter(v => v.endsWith('.xcodeproj'))?.[0];
-    name = name.substring(0, name.indexOf('.xcode'));
-
-    {
-      console.log('1. Pod Install...');
-      let podfile = (await readFile(path + '/ios/PodFile')).split('\n');
-      const ix = podfile.findIndex(x => x.indexOf('platform :ios') >= 0);
-      if (ix >= 0) {
-        podfile[ix] = podfile[ix].replace("'9.", "'11.").replace("'10.", "'11.");
-      }
-      await writeFile(path + '/ios/PodFile', podfile.join('\n'));
-      await execute(`pod install --repo-update --project-directory=${path}/ios`);
+    let name;
+    try {
+      name = (await readDir(path + '/ios'))?.filter(v => v.endsWith('.xcodeproj'))?.[0];
+    }catch{
+      name = undefined;
     }
 
-    {
-      console.log('2. Info.plist 설정');
-      const plists = [];
-      let pbx = (await readFile(path + `/ios/${name}.xcodeproj/project.pbxproj`)).split('\n');
-      const pbxoutput = pbx
-        .map(v => {
-          if (v.indexOf('INFOPLIST_FILE') >= 0) {
-            plists.push(v.substring(v.indexOf('=') + 1).trim());
-          }
-          if (v.indexOf('IPHONEOS_DEPLOYMENT_TARGET') >= 0) {
-            return v.replace('9.', '11.').replace('10.', '11.');
-          }
-          return v;
-        })
-        .join('\n');
-      console.log(' > Deployment 버전 확인 후 낮을 시 올립니다.');
+    if(name) {
+      name = name.substring(0, name.indexOf('.xcode'));
 
-      await writeFile(path + `/ios/${name}.xcodeproj/project.pbxproj`, pbxoutput);
-      for (const plistPath of plists?.filter((v, ix) => plists.indexOf(v) === ix)) {
-        let r = plistPath.substring(0, plistPath.length - 1);
-        r = r.replace(/\$\(SRCROOT\)/g, '');
-        r = r.replace(/\"/g, '');
-
-        const appPlist = plist.parse(await readFile(path + `/ios/${r}`));
-        if (!appPlist.LSApplicationQueriesSchemes) {
-          appPlist.LSApplicationQueriesSchemes = [];
+      {
+        console.log('1. Pod Install...');
+        let podfile = (await readFile(path + '/ios/PodFile')).split('\n');
+        const ix = podfile.findIndex(x => x.indexOf('platform :ios') >= 0);
+        if (ix >= 0) {
+          podfile[ix] = podfile[ix].replace("'9.", "'11.").replace("'10.", "'11.");
         }
-        if (!appPlist.LSApplicationQueriesSchemes.includes('kakaokompassauth')) {
-          appPlist.LSApplicationQueriesSchemes.push('kakaokompassauth');
-        }
-        if (!appPlist.LSApplicationQueriesSchemes.includes('kakaolink')) {
-          appPlist.LSApplicationQueriesSchemes.push('kakaolink');
-        }
-
-        if (!appPlist.CFBundleURLTypes) {
-          appPlist.CFBundleURLTypes = [];
-        }
-
-        for (const key of keys) {
-          if (!appPlist.LSApplicationQueriesSchemes.includes(key)) {
-            appPlist.LSApplicationQueriesSchemes.push(key);
-          }
-          if (!appPlist.LSApplicationQueriesSchemes.includes(`kakao${key}`)) {
-            appPlist.LSApplicationQueriesSchemes.push(`kakao${key}`);
-          }
-
-          if (!appPlist.CFBundleURLTypes.find(v => v.CFBundleURLSchemes.includes(`kakao${key}`))) {
-            appPlist.CFBundleURLTypes.push({
-              CFBundleTypeRole: 'Editor',
-              CFBundleURLSchemes: [`kakao${key}`],
-            });
-          }
-        }
-        await writeFile(path + `/ios/${r}`, plist.build(appPlist));
-      }
-      console.log(' > Plist 내 설정값을 지정합니다.');
-    }
-
-    {
-      console.log('3. AppDelegate.m 설정');
-      let adf = await readFile(path + `/ios/${name}/AppDelegate.m`);
-      if (adf.indexOf('WithKakaoSDK.h') < 0) {
-        adf = '#import "WithKakaoSDK.h"\n' + adf;
+        await writeFile(path + '/ios/PodFile', podfile.join('\n'));
+        await execute(`pod install --repo-update --project-directory=${path}/ios`);
       }
 
-      if (adf.indexOf('[WithKakaoSDK isKakaoTalkLoginUrl:url]') < 0) {
-        let adfsplit = adf.split('\n');
-        const ix = [];
-        adfsplit.forEach((x, n) => {
-          if (x.indexOf('application:') > 0 && x.indexOf('penURL') > 0 && !x.trim().startsWith('//')) {
-            ix.push(n);
-          }
-        });
+      {
+        console.log('2. Info.plist 설정');
+        const plists = [];
+        let pbx = (await readFile(path + `/ios/${name}.xcodeproj/project.pbxproj`)).split('\n');
+        const pbxoutput = pbx
+            .map(v => {
+              if (v.indexOf('INFOPLIST_FILE') >= 0) {
+                plists.push(v.substring(v.indexOf('=') + 1).trim());
+              }
+              if (v.indexOf('IPHONEOS_DEPLOYMENT_TARGET') >= 0) {
+                return v.replace('9.', '11.').replace('10.', '11.');
+              }
+              return v;
+            })
+            .join('\n');
+        console.log(' > Deployment 버전 확인 후 낮을 시 올립니다.');
 
-        if (ix.length > 0) {
-          console.log(' > openURL시 이벤트가 삽입되야 합니다.');
-          console.log(
-            ' > "if ([WithKakaoSDK isKakaoTalkLoginUrl:url]) return [WithKakaoSDK handleOpenUrl:url];" 를 openURL 옵션에 넣어주세요',
-          );
-          console.log(' > 자세한 내용은 github install manual 참고하세요.');
-        } else {
-          const pf = adf.substring(0, adf.lastIndexOf('@'));
-          const cx = `
+        await writeFile(path + `/ios/${name}.xcodeproj/project.pbxproj`, pbxoutput);
+        for (const plistPath of plists?.filter((v, ix) => plists.indexOf(v) === ix)) {
+          let r = plistPath.substring(0, plistPath.length - 1);
+          r = r.replace(/\$\(SRCROOT\)/g, '');
+          r = r.replace(/\"/g, '');
+
+          const appPlist = plist.parse(await readFile(path + `/ios/${r}`));
+          if (!appPlist.LSApplicationQueriesSchemes) {
+            appPlist.LSApplicationQueriesSchemes = [];
+          }
+          if (!appPlist.LSApplicationQueriesSchemes.includes('kakaokompassauth')) {
+            appPlist.LSApplicationQueriesSchemes.push('kakaokompassauth');
+          }
+          if (!appPlist.LSApplicationQueriesSchemes.includes('kakaolink')) {
+            appPlist.LSApplicationQueriesSchemes.push('kakaolink');
+          }
+
+          if (!appPlist.CFBundleURLTypes) {
+            appPlist.CFBundleURLTypes = [];
+          }
+
+          for (const key of keys) {
+            if (!appPlist.LSApplicationQueriesSchemes.includes(key)) {
+              appPlist.LSApplicationQueriesSchemes.push(key);
+            }
+            if (!appPlist.LSApplicationQueriesSchemes.includes(`kakao${key}`)) {
+              appPlist.LSApplicationQueriesSchemes.push(`kakao${key}`);
+            }
+
+            if (!appPlist.CFBundleURLTypes.find(v => v.CFBundleURLSchemes.includes(`kakao${key}`))) {
+              appPlist.CFBundleURLTypes.push({
+                CFBundleTypeRole: 'Editor',
+                CFBundleURLSchemes: [`kakao${key}`],
+              });
+            }
+          }
+          await writeFile(path + `/ios/${r}`, plist.build(appPlist));
+        }
+        console.log(' > Plist 내 설정값을 지정합니다.');
+      }
+
+      {
+        console.log('3. AppDelegate.m 설정');
+        let adf = await readFile(path + `/ios/${name}/AppDelegate.m`);
+        if (adf.indexOf('WithKakaoSDK.h') < 0) {
+          adf = '#import "WithKakaoSDK.h"\n' + adf;
+        }
+
+        if (adf.indexOf('[WithKakaoSDK isKakaoTalkLoginUrl:url]') < 0) {
+          let adfsplit = adf.split('\n');
+          const ix = [];
+          adfsplit.forEach((x, n) => {
+            if (x.indexOf('application:') > 0 && x.indexOf('penURL') > 0 && !x.trim().startsWith('//')) {
+              ix.push(n);
+            }
+          });
+
+          if (ix.length > 0) {
+            console.log(' > openURL시 이벤트가 삽입되야 합니다.');
+            console.log(
+                ' > "if ([WithKakaoSDK isKakaoTalkLoginUrl:url]) return [WithKakaoSDK handleOpenUrl:url];" 를 openURL 옵션에 넣어주세요',
+            );
+            console.log(' > 자세한 내용은 github install manual 참고하세요.');
+          } else {
+            const pf = adf.substring(0, adf.lastIndexOf('@'));
+            const cx = `
 - (BOOL) application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
   if ([WithKakaoSDK isKakaoTalkLoginUrl:url]) return [WithKakaoSDK handleOpenUrl:url];
   return YES;
 }
 `;
-          const sf = adf.substring(adf.lastIndexOf('@'));
-          adf = pf + cx + sf;
-          await writeFile(path + `/ios/${name}/AppDelegate.m`, adf);
+            const sf = adf.substring(adf.lastIndexOf('@'));
+            adf = pf + cx + sf;
+            await writeFile(path + `/ios/${name}/AppDelegate.m`, adf);
+          }
         }
-      }
 
-      console.log(' > 저장 완료.');
+        console.log(' > 저장 완료.');
+      }
+    }
+    else{
+      console.log('iOS 설치 생략');
     }
 
     console.log('Android 설치 시작');
