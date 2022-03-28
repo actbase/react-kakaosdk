@@ -94,7 +94,13 @@ const start = async () => {
     const keys = input ? input.split(';') : [];
     console.log('iOS 설치 시작');
 
-    let name = (await readDir(path + '/ios'))?.filter(v => v.endsWith('.xcodeproj'))?.[0];
+    let name;
+    try {
+      name = (await readDir(path + '/ios'))?.filter(v => v.endsWith('.xcodeproj'))?.[0];
+    }catch{
+      name = undefined;
+    }
+
     if(name) {
       name = name.substring(0, name.indexOf('.xcode'));
 
