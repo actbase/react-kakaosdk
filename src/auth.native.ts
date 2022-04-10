@@ -35,6 +35,7 @@ const login = (props: IAuthLoginProps) => {
 const logoutAsync = async () => {
   // TODO Auth logoutAsync
 };
+
 const logout = (handler: () => void) => {
   logoutAsync().then(() => handler());
 };
