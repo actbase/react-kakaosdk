@@ -290,40 +290,62 @@ export interface IKakaoLink {
   deleteImage: (props: { imageUrl: string }) => Promise<void>;
 }
 
+export interface IStoryBaseProps {
+  url: string;
+  text: string;
+}
+
+export interface IStoryDefaultProps extends IStoryBaseProps {
+  container?: string;
+}
+export interface IStoryFollowProps {
+  container?: string;
+  id?: string;
+}
+
 export interface IKakaoStory {
-  createShareButton: (props: { container?: string; url: string; text: string }) => void;
-  share: (props: { url: string; text: string }) => Promise<void>;
-  open: (props: { url: string; text: string }) => Promise<void>;
-  createFollowButton: (props: { container?: string; id?: string }) => void;
+  createShareButton: (props: IStoryDefaultProps) => void;
+  share: (props: IStoryBaseProps) => Promise<void>;
+  open: (props: IStoryBaseProps) => Promise<void>;
+  createFollowButton: (props: IStoryFollowProps) => void;
+}
+
+export interface IChannelBaseProps {
+  channelPublicId: string;
+}
+
+export interface IChannelDefaultProps extends IChannelBaseProps {
+  container?: string;
 }
 
 export interface IKakaoChannel {
-  createAddChannelButton: (props: { container?: string; channelPublicId: string }) => void;
-  addChannel: (props: { channelPublicId: string }) => Promise<void>;
-  createChatButton: (props: { container?: string; channelPublicId: string }) => void;
-  chat: (props: { channelPublicId: string }) => Promise<void>;
+  createAddChannelButton: (props: IChannelDefaultProps) => void;
+  addChannel: (props: IChannelBaseProps) => Promise<void>;
+  createChatButton: (props: IChannelDefaultProps) => void;
+  chat: (props: IChannelBaseProps) => Promise<void>;
+}
+
+export interface INaviBaseProps {
+  name: string;
+  x: number;
+  y: number;
+  coordType?: 'wgs84' | 'katec';
+}
+
+export interface INaviStartProps extends INaviBaseProps {
+  vehicleType?: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  rpOption?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 100;
+  routeInfo?: boolean;
+  sX?: number;
+  sY?: number;
+  sAngle?: number;
+  returnUri?: string;
+  viaPoints?: INaviBaseProps[];
 }
 
 export interface IKakaoNavi {
-  start: (props: {
-    name: string;
-    x: number;
-    y: number;
-    coordType?: 'wgs84' | 'katec';
-    vehicleType?: 1 | 2 | 3 | 4 | 5 | 6 | 7;
-    rpOption?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 100;
-    routeInfo?: boolean;
-    sX?: number;
-    sY?: number;
-    sAngle?: number;
-    returnUri?: string;
-    viaPoints?: {
-      name: string;
-      x: number;
-      y: number;
-    }[];
-  }) => void;
-  share: (props: { name: string; x: number; y: number; coordType?: 'wgs84' | 'katec' }) => void;
+  start: (props: INaviStartProps) => void;
+  share: (props: INaviBaseProps) => Promise<void>;
 }
 
 export interface IKakao extends IKakaoDefault {
