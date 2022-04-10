@@ -306,7 +306,7 @@ export interface IStoryFollowProps {
 }
 
 export interface IKakaoStory {
-  createShareButton: (props: IStoryDefaultProps) => void;
+  createShareButton: (props: IStoryDefaultProps) => React.FC | void;
   share: (props: IStoryBaseProps) => Promise<void>;
   open: (props: IStoryBaseProps) => Promise<void>;
   createFollowButton: (props: IStoryFollowProps) => void;
