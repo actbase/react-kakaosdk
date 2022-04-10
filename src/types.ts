@@ -94,3 +94,242 @@ export interface KakaoSDK {
   openChannel: (id: string) => Promise<any>;
   openChannelChat: (id: string) => Promise<any>;
 }
+
+export interface IAPIBaseProps {
+  url: string;
+  data?: {
+    // Kakao Story
+    id?: string;
+    link_info?: {
+      url?: string;
+      requested_url?: string;
+      host?: string;
+      title?: string;
+      image?: string[];
+      description?: string;
+      type?: string;
+      section?: string;
+    };
+    image_url_list?: string[];
+    content?: string;
+    permission?: string;
+    enable_share?: boolean;
+    android_exec_param?: string;
+    ios_exec_param?: string;
+    android_market_param?: string;
+    ios_market_param?: string;
+
+    // Kakao Auth
+    property_keys?: string[];
+    properties?: {
+      [key: string]: unknown;
+    };
+    scopes?: string[];
+    [key: string]: unknown;
+  };
+}
+
+export interface IAPIProps extends IAPIBaseProps {
+  success?: (o: unknown) => void;
+  fail?: (o: unknown) => void;
+  always?: (o: unknown) => void;
+}
+
+export interface IKakaoAPI {
+  request: (props: IAPIProps) => void;
+  requestAsync: (props: IAPIBaseProps) => Promise<unknown>;
+}
+
+export interface IKakaoDefault {
+  init: (appKey: string) => Promise<void>;
+  isInitialized: () => Promise<boolean>;
+  API: IKakaoAPI;
+}
+
+export interface IAuthAuthorizeProps {
+  redirectUri?: string;
+  state?: string;
+  scope?: string;
+  nonce?: string;
+  throughTalk?: boolean;
+}
+
+export interface IAuthLoginBaseProps {
+  scope?: string;
+}
+
+export interface IAuthLoginProps extends IAuthLoginBaseProps {
+  success?: (response: unknown) => void;
+  fail?: (error: unknown) => void;
+}
+
+export interface IKakaoAuth {
+  authorize: (props: IAuthAuthorizeProps) => Promise<void>;
+  setAccessToken: (accessToken: string) => void;
+  getAccessToken: () => string;
+  logout: (handler: () => void) => void;
+  logoutAsync: () => Promise<void>;
+  login: (props: IAuthLoginProps) => void;
+  loginAsync: (props: IAuthLoginBaseProps) => Promise<unknown>;
+}
+
+export interface ILinkHrefProps {
+  mobileWebUrl?: string;
+  webUrl?: string;
+  androidExecutionParams?: string;
+}
+export interface ILinkContentProps {
+  title?: string;
+  description?: string;
+  imageUrl?: string;
+  link?: ILinkHrefProps;
+}
+
+export interface ILinkItemContentProps {
+  profileText?: string;
+  profileImageUrl?: string;
+  titleImageUrl?: string;
+  titleImageText?: string;
+  titleImageCategory?: string;
+  items?: {
+    item?: string;
+    itemOp?: string;
+  }[];
+  sum?: string;
+  sumOp?: string;
+}
+
+export interface ILinkButtonProps {
+  title: string;
+  link?: ILinkHrefProps;
+}
+
+export interface ILinkBaseProps {
+  objectType?: 'feed' | 'list' | 'location' | 'commerce' | 'text';
+
+  // Feed Type
+  content?: ILinkContentProps;
+  itemContent?: ILinkItemContentProps;
+  social?: {
+    likeCount?: number;
+    commentCount?: number;
+    sharedCount?: number;
+  };
+  buttons?: ILinkButtonProps[];
+
+  // List
+  headerTitle?: string;
+  headerLink?: ILinkHrefProps;
+  contents?: ILinkContentProps[];
+
+  // Location
+  address?: string;
+  addressTitle?: string;
+
+  // commerce
+  commerce?: {
+    productName?: string;
+    regularPrice?: number;
+    discountRate?: number;
+    discountPrice?: number;
+  };
+
+  // text
+  text?: string;
+  link?: ILinkButtonProps;
+
+  serverCallbackArgs?: {
+    // 사용자 정의 파라미터 설정
+    [key: string]: unknown;
+  };
+}
+
+export interface ILinkCreateButtonProps extends ILinkBaseProps {
+  container?: string;
+}
+
+export interface ILinkCustomBaseProps {
+  templateId: string;
+  templateArgs?: {
+    [key: string]: unknown;
+  };
+
+  serverCallbackArgs?: {
+    // 사용자 정의 파라미터 설정
+    [key: string]: unknown;
+  };
+}
+
+export interface ILinkCreateCustomButtonProps extends ILinkCustomBaseProps {
+  container?: string;
+}
+
+export interface ILinkScrapBaseProps {
+  requestUrl: string;
+  templateId?: string;
+
+  serverCallbackArgs?: {
+    // 사용자 정의 파라미터 설정
+    [key: string]: unknown;
+  };
+}
+
+export interface ILinkCreateScrapButtonProps extends ILinkScrapBaseProps {
+  container?: string;
+}
+
+export interface IKakaoLink {
+  createDefaultButton: (props: ILinkCreateButtonProps) => void;
+  sendDefault: (props: ILinkBaseProps) => Promise<void>;
+  createCustomButton: (props: ILinkCreateCustomButtonProps) => void;
+  sendCustom: (props: ILinkCustomBaseProps) => Promise<void>;
+  createScrapButton: (props: ILinkCreateScrapButtonProps) => void;
+  sendScrap: (props: ILinkScrapBaseProps) => Promise<void>;
+  uploadImage: (props: { file: unknown[] }) => Promise<void>;
+  scrapImage: (props: { imageUrl: string }) => Promise<void>;
+  deleteImage: (props: { imageUrl: string }) => Promise<void>;
+}
+
+export interface IKakaoStory {
+  createShareButton: (props: { container?: string; url: string; text: string }) => void;
+  share: (props: { url: string; text: string }) => Promise<void>;
+  open: (props: { url: string; text: string }) => Promise<void>;
+  createFollowButton: (props: { container?: string; id?: string }) => void;
+}
+
+export interface IKakaoChannel {
+  createAddChannelButton: (props: { container?: string; channelPublicId: string }) => void;
+  addChannel: (props: { channelPublicId: string }) => Promise<void>;
+  createChatButton: (props: { container?: string; channelPublicId: string }) => void;
+  chat: (props: { channelPublicId: string }) => Promise<void>;
+}
+
+export interface IKakaoNavi {
+  start: (props: {
+    name: string;
+    x: number;
+    y: number;
+    coordType?: 'wgs84' | 'katec';
+    vehicleType?: 1 | 2 | 3 | 4 | 5 | 6 | 7;
+    rpOption?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 100;
+    routeInfo?: boolean;
+    sX?: number;
+    sY?: number;
+    sAngle?: number;
+    returnUri?: string;
+    viaPoints?: {
+      name: string;
+      x: number;
+      y: number;
+    }[];
+  }) => void;
+  share: (props: { name: string; x: number; y: number; coordType?: 'wgs84' | 'katec' }) => void;
+}
+
+export interface IKakao extends IKakaoDefault {
+  Auth?: IKakaoAuth;
+  Link?: IKakaoLink;
+  Story?: IKakaoStory;
+  Channel?: IKakaoChannel;
+  Navi?: IKakaoNavi;
+}
