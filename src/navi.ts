@@ -1,10 +1,12 @@
 import { IKakaoNavi, INaviBaseProps, INaviStartProps } from './types';
 
 const start = (props: INaviStartProps) => {
-  console.log(props);
+  if (!window.Kakao || !window.Kakao.isInitialized()) throw { message: 'not initialized' };
+  window.Kakao.Navi.start(props);
 };
 const share = async (props: INaviBaseProps) => {
-  console.log(props);
+  if (!window.Kakao || !window.Kakao.isInitialized()) throw { message: 'not initialized' };
+  window.Kakao.Navi.share(props);
 };
 
 const Navi: IKakaoNavi = {

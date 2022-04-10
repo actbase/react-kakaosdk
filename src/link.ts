@@ -9,39 +9,48 @@ import {
 } from './types';
 
 const createDefaultButton = (props: ILinkCreateButtonProps) => {
-  console.log(props);
+  if (!window.Kakao || !window.Kakao.isInitialized()) throw { message: 'not initialized' };
+  window.Kakao.Link.createDefaultButton(props);
 };
 
 const sendDefault = async (props: ILinkBaseProps) => {
-  console.log(props);
+  if (!window.Kakao || !window.Kakao.isInitialized()) throw { message: 'not initialized' };
+  window.Kakao.Link.sendDefault(props);
 };
 
 const createCustomButton = (props: ILinkCreateCustomButtonProps) => {
-  console.log(props);
+  if (!window.Kakao || !window.Kakao.isInitialized()) throw { message: 'not initialized' };
+  window.Kakao.Link.createCustomButton(props);
 };
 
 const sendCustom = async (props: ILinkCustomBaseProps) => {
-  console.log(props);
+  if (!window.Kakao || !window.Kakao.isInitialized()) throw { message: 'not initialized' };
+  window.Kakao.Link.sendCustom(props);
 };
 
 const createScrapButton = (props: ILinkCreateScrapButtonProps) => {
-  console.log(props);
+  if (!window.Kakao || !window.Kakao.isInitialized()) throw { message: 'not initialized' };
+  window.Kakao.Link.createScrapButton(props);
 };
 
 const sendScrap = async (props: ILinkScrapBaseProps) => {
-  console.log(props);
+  if (!window.Kakao || !window.Kakao.isInitialized()) throw { message: 'not initialized' };
+  window.Kakao.Link.sendScrap(props);
 };
 
 const uploadImage = async (props: { file: unknown[] }) => {
-  console.log(props);
+  if (!window.Kakao || !window.Kakao.isInitialized()) throw { message: 'not initialized' };
+  window.Kakao.Link.uploadImage(props);
 };
 
 const scrapImage = async (props: { imageUrl: string }) => {
-  console.log(props);
+  if (!window.Kakao || !window.Kakao.isInitialized()) throw { message: 'not initialized' };
+  window.Kakao.Link.scrapImage(props);
 };
 
 const deleteImage = async (props: { imageUrl: string }) => {
-  console.log(props);
+  if (!window.Kakao || !window.Kakao.isInitialized()) throw { message: 'not initialized' };
+  window.Kakao.Link.deleteImage(props);
 };
 
 const Link: IKakaoLink = {

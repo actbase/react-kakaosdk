@@ -1,16 +1,23 @@
 import { IChannelBaseProps, IChannelDefaultProps, IKakaoChannel } from './types';
 
 const createAddChannelButton = (props: IChannelDefaultProps) => {
-  console.log(props);
+  if (!window.Kakao || !window.Kakao.isInitialized()) throw { message: 'not initialized' };
+  window.Kakao.Channel.createAddChannelButton(props);
 };
+
 const addChannel = async (props: IChannelBaseProps) => {
-  console.log(props);
+  if (!window.Kakao || !window.Kakao.isInitialized()) throw { message: 'not initialized' };
+  window.Kakao.Channel.addChannel(props);
 };
+
 const createChatButton = (props: IChannelDefaultProps) => {
-  console.log(props);
+  if (!window.Kakao || !window.Kakao.isInitialized()) throw { message: 'not initialized' };
+  window.Kakao.Channel.createChatButton(props);
 };
+
 const chat = async (props: IChannelBaseProps) => {
-  console.log(props);
+  if (!window.Kakao || !window.Kakao.isInitialized()) throw { message: 'not initialized' };
+  window.Kakao.Channel.chat(props);
 };
 
 const Channel: IKakaoChannel = {

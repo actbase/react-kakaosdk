@@ -29,7 +29,16 @@ export const isInitialized = async () => {
   return Kakao.isInitialized();
 };
 
-const requestAsync = async (props: IAPIBaseProps) => {};
+const requestAsync = (props: IAPIBaseProps) => {
+  if (!window.Kakao || !window.Kakao.isInitialized()) throw { message: 'not initialized' };
+  return new Promise((resolve, reject) => {
+    window.Kakao.API.request({
+      ...props,
+      success: (r: unknown) => resolve(r),
+      fail: (e: unknown) => reject(e),
+    });
+  });
+};
 
 const request = (props: IAPIProps) => {
   requestAsync({ url: props.url, data: props.data })
