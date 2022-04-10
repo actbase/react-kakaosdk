@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
 
   s.dependency 'React'
   s.dependency 'React-Core'
-  s.dependency 'KakaoSDK', '2.5.0'
+  s.dependency 'KakaoSDK', '2.9.1'
 
   s.xcconfig = {
     "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES" => "YES",

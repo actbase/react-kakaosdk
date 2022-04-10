@@ -1,3 +1,5 @@
+import * as React from 'react';
+
 export interface ProfileType {
   connected_at: string;
   id: number;
@@ -319,9 +321,9 @@ export interface IChannelDefaultProps extends IChannelBaseProps {
 }
 
 export interface IKakaoChannel {
-  createAddChannelButton: (props: IChannelDefaultProps) => void;
+  createAddChannelButton: (props: IChannelDefaultProps) => React.FC | void;
   addChannel: (props: IChannelBaseProps) => Promise<void>;
-  createChatButton: (props: IChannelDefaultProps) => void;
+  createChatButton: (props: IChannelDefaultProps) => React.FC | void;
   chat: (props: IChannelBaseProps) => Promise<void>;
 }
 

@@ -9,9 +9,9 @@
 
 ## Use Dependencies
 
-| iOS                                                                   | Android                                                                   | Web                                                                    |
-| --------------------------------------------------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| [2.5.1](https://developers.kakao.com/docs/latest/ko/sdk-download/ios) | [2.5.0](https://developers.kakao.com/docs/latest/ko/sdk-download/android) | [1.39.14](https://developers.kakao.com/docs/latest/ko/sdk-download/js) |
+| iOS                                                                   | Android                                                                   | Web                                                                   |
+|-----------------------------------------------------------------------|---------------------------------------------------------------------------|-----------------------------------------------------------------------|
+| [2.9.1](https://developers.kakao.com/docs/latest/ko/sdk-download/ios) | [2.9.0](https://developers.kakao.com/docs/latest/ko/sdk-download/android) | [1.41.3](https://developers.kakao.com/docs/latest/ko/sdk-download/js) |
 
 ### 처음 설치 시 주의 사항 (React-Native 만)
 
