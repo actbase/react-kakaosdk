@@ -12,14 +12,15 @@ const createAddChannelButton = (props: IChannelDefaultProps): React.FC => {
   if (props.container) {
     console.warn('container field is Web Only.');
   }
-  return subProps =>
-    React.createElement(TouchableWithoutFeedback, {
-      onPress: () => {
+  return subProps => (
+    <TouchableWithoutFeedback
+      onPress={() => {
         alert('a');
         addChannel({ channelPublicId: props.channelPublicId });
-      },
-      ...subProps,
-    });
+      }}
+      {...subProps}
+    />
+  );
 };
 
 const chat = async (props: IChannelBaseProps) => {
@@ -30,11 +31,15 @@ const createChatButton = (props: IChannelDefaultProps): React.FC => {
   if (props.container) {
     console.warn('container field is Web Only.');
   }
-  return subProps =>
-    React.createElement(TouchableWithoutFeedback, {
-      onPress: () => chat({ channelPublicId: props.channelPublicId }),
-      ...subProps,
-    });
+  return subProps => (
+    <TouchableWithoutFeedback
+      onPress={() => {
+        alert('a');
+        chat({ channelPublicId: props.channelPublicId });
+      }}
+      {...subProps}
+    />
+  );
 };
 
 const Channel: IKakaoChannel = {
