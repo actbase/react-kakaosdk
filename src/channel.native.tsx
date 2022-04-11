@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IChannelBaseProps, IChannelDefaultProps, IKakaoChannel } from './types';
-import { NativeModules, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { NativeModules, TouchableOpacity } from 'react-native';
 
 const { RNAKakaoSDK } = NativeModules;
 
@@ -13,13 +13,7 @@ const createAddChannelButton = (props: IChannelDefaultProps): React.FC => {
     console.warn('container field is Web Only.');
   }
   return subProps => (
-    <TouchableOpacity
-      onPress={() => {
-        alert('a');
-        addChannel({ channelPublicId: props.channelPublicId });
-      }}
-      {...subProps}
-    />
+    <TouchableOpacity onPress={() => addChannel({ channelPublicId: props.channelPublicId })} {...subProps} />
   );
 };
 
@@ -32,13 +26,7 @@ const createChatButton = (props: IChannelDefaultProps): React.FC => {
     console.warn('container field is Web Only.');
   }
   return subProps => (
-    <TouchableOpacity
-      onPress={() => {
-        alert('a');
-        chat({ channelPublicId: props.channelPublicId });
-      }}
-      {...subProps}
-    />
+    <TouchableOpacity onPress={() => chat({ channelPublicId: props.channelPublicId })} {...subProps} />
   );
 };
 
