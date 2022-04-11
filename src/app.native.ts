@@ -12,6 +12,21 @@ export const isInitialized = async () => {
 };
 
 const requestAsync = async (props: IAPIBaseProps) => {
+  const host = 'https://kapi.kakao.com';
+
+  const r = await fetch(`${host}${props.url}`, {
+    body: JSON.stringify(props.data),
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${'access_token'}`,
+    },
+  });
+
+  const response = await r.json();
+
+  return response;
+
   // TODO API Request
   // /v2/user/me - 사용자 정보 가져오기
   // /v1/user/update_profile - 사용자 정보 저장하기
