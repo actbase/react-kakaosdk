@@ -4,12 +4,10 @@ import { NativeModules } from 'react-native';
 const { RNAKakaoSDK } = NativeModules;
 
 const start = (props: INaviStartProps) => {
-  // TODO Navi start
-  console.log(props);
+  RNAKakaoSDK.navi_start(props);
 };
 const share = async (props: INaviBaseProps) => {
-  // TODO Navi share
-  console.log(props);
+  RNAKakaoSDK.navi_share(props);
 };
 
 const Navi: IKakaoNavi = {
