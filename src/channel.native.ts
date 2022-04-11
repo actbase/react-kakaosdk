@@ -16,8 +16,7 @@ const createAddChannelButton = (props: IChannelDefaultProps): React.FC => {
 };
 
 const addChannel = async (props: IChannelBaseProps) => {
-  // TODO Channel addChannel
-  console.log(props);
+  return await RNAKakaoSDK.channel_addChannel(props.channelPublicId);
 };
 
 const createChatButton = (props: IChannelDefaultProps): React.FC => {
@@ -32,8 +31,7 @@ const createChatButton = (props: IChannelDefaultProps): React.FC => {
 };
 
 const chat = async (props: IChannelBaseProps) => {
-  // TODO Channel chat
-  console.log(props);
+  return await RNAKakaoSDK.channel_chat(props.channelPublicId);
 };
 
 const Channel: IKakaoChannel = {
