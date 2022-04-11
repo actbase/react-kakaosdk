@@ -40,7 +40,7 @@ public class RNAKakaoSDK: NSObject {
 
     @objc(init:)
     func sdkinit(_ appKey: String) -> Void {
-        KakaoSDKCommon.initSDK(appKey: appKey)
+        KakaoSDK.initSDK(appKey: appKey)
         inited = true
     }
 
@@ -54,315 +54,315 @@ public class RNAKakaoSDK: NSObject {
     func login(_ resolve: @escaping RCTPromiseResolveBlock,
                rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
 
-        DispatchQueue.main.async {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss";
-
-            if (UserApi.isKakaoTalkLoginAvailable()) {
-                UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
-                    do {
-                        if let error = error {
-                            throw error;
-                        }
-                        resolve([
-                            "accessToken": oauthToken!.accessToken,
-                            "refreshToken": oauthToken!.refreshToken,
-                            "accessTokenExpiresAt": dateFormatter.string(from: oauthToken!.expiredAt),
-                            "refreshTokenExpiresAt": dateFormatter.string(from: oauthToken!.refreshTokenExpiredAt),
-                            "scopes": oauthToken?.scopes,
-                        ])
-                    } catch let e {
-                        print(e);
-                        reject("actbase_kakao_sdk", e.localizedDescription, nil)
-                    }
-                }
-            }
-            else {
-                UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
-                    do {
-                        if let error = error {
-                            throw error;
-                        }
-
-                        resolve([
-                            "accessToken": oauthToken!.accessToken,
-                            "refreshToken": oauthToken!.refreshToken,
-                            "accessTokenExpiresAt": dateFormatter.string(from: oauthToken!.expiredAt),
-                            "refreshTokenExpiresAt": dateFormatter.string(from: oauthToken!.refreshTokenExpiredAt),
-                            "scopes": oauthToken?.scopes,
-                        ])
-                    } catch let e {
-                        print(e);
-                        reject("actbase_kakao_sdk", e.localizedDescription, nil)
-                    }
-                }
-            }
-        }
+//        DispatchQueue.main.async {
+//            let dateFormatter = DateFormatter()
+//            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss";
+//
+//            if (UserApi.isKakaoTalkLoginAvailable()) {
+//                UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
+//                    do {
+//                        if let error = error {
+//                            throw error;
+//                        }
+//                        resolve([
+//                            "accessToken": oauthToken!.accessToken,
+//                            "refreshToken": oauthToken!.refreshToken,
+//                            "accessTokenExpiresAt": dateFormatter.string(from: oauthToken!.expiredAt),
+//                            "refreshTokenExpiresAt": dateFormatter.string(from: oauthToken!.refreshTokenExpiredAt),
+//                            "scopes": oauthToken?.scopes,
+//                        ])
+//                    } catch let e {
+//                        print(e);
+//                        reject("actbase_kakao_sdk", e.localizedDescription, nil)
+//                    }
+//                }
+//            }
+//            else {
+//                UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
+//                    do {
+//                        if let error = error {
+//                            throw error;
+//                        }
+//
+//                        resolve([
+//                            "accessToken": oauthToken!.accessToken,
+//                            "refreshToken": oauthToken!.refreshToken,
+//                            "accessTokenExpiresAt": dateFormatter.string(from: oauthToken!.expiredAt),
+//                            "refreshTokenExpiresAt": dateFormatter.string(from: oauthToken!.refreshTokenExpiredAt),
+//                            "scopes": oauthToken?.scopes,
+//                        ])
+//                    } catch let e {
+//                        print(e);
+//                        reject("actbase_kakao_sdk", e.localizedDescription, nil)
+//                    }
+//                }
+//            }
+//        }
     }
 
     @objc(manualLogin:rejecter:)
     func manualLogin(_ resolve: @escaping RCTPromiseResolveBlock,
                rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
 
-        DispatchQueue.main.async {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss";
-                UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
-                    do {
-                        if let error = error {
-                            throw error;
-                        }
-
-                        resolve([
-                            "accessToken": oauthToken!.accessToken,
-                            "refreshToken": oauthToken!.refreshToken,
-                            "accessTokenExpiresAt": dateFormatter.string(from: oauthToken!.expiredAt),
-                            "refreshTokenExpiresAt": dateFormatter.string(from: oauthToken!.refreshTokenExpiredAt),
-                            "scopes": oauthToken?.scopes,
-                        ])
-                    } catch let e {
-                        print(e);
-                        reject("actbase_kakao_sdk", e.localizedDescription, nil)
-                    }
-                }
-        }
+//        DispatchQueue.main.async {
+//            let dateFormatter = DateFormatter()
+//            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss";
+//                UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
+//                    do {
+//                        if let error = error {
+//                            throw error;
+//                        }
+//
+//                        resolve([
+//                            "accessToken": oauthToken!.accessToken,
+//                            "refreshToken": oauthToken!.refreshToken,
+//                            "accessTokenExpiresAt": dateFormatter.string(from: oauthToken!.expiredAt),
+//                            "refreshTokenExpiresAt": dateFormatter.string(from: oauthToken!.refreshTokenExpiredAt),
+//                            "scopes": oauthToken?.scopes,
+//                        ])
+//                    } catch let e {
+//                        print(e);
+//                        reject("actbase_kakao_sdk", e.localizedDescription, nil)
+//                    }
+//                }
+//        }
     }
 
     @objc(loginWithNewScopes:resolver:rejecter:)
     func loginWithNewScopes(_ scopedata: NSArray,
                resolver resolve: @escaping RCTPromiseResolveBlock,
                rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        DispatchQueue.main.async {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss";
-
-            let scopes = scopedata as? [String]
-            UserApi.shared.loginWithKakaoAccount(scopes: scopes!) { (oauthToken, error) in
-                if let error = error {
-                    reject("RCTKakaoSDK", error.asAFError?.errorDescription, nil)
-                    return
-                }
-                else {
-                    do {
-                        if let error = error {
-                            throw error;
-                        }
-
-                        resolve([
-                            "accessToken": oauthToken!.accessToken,
-                            "refreshToken": oauthToken!.refreshToken,
-                            "accessTokenExpiresAt": dateFormatter.string(from: oauthToken!.expiredAt),
-                            "refreshTokenExpiresAt": dateFormatter.string(from: oauthToken!.refreshTokenExpiredAt),
-                            "scopes": oauthToken?.scopes!,
-                        ])
-
-                    } catch let e {
-                        reject("actbase_kakao_sdk", e.localizedDescription, nil)
-                    }
-                }
-            }
-        }
+//        DispatchQueue.main.async {
+//            let dateFormatter = DateFormatter()
+//            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss";
+//
+//            let scopes = scopedata as? [String]
+//            UserApi.shared.loginWithKakaoAccount(scopes: scopes!) { (oauthToken, error) in
+//                if let error = error {
+//                    reject("RCTKakaoSDK", error.asAFError?.errorDescription, nil)
+//                    return
+//                }
+//                else {
+//                    do {
+//                        if let error = error {
+//                            throw error;
+//                        }
+//
+//                        resolve([
+//                            "accessToken": oauthToken!.accessToken,
+//                            "refreshToken": oauthToken!.refreshToken,
+//                            "accessTokenExpiresAt": dateFormatter.string(from: oauthToken!.expiredAt),
+//                            "refreshTokenExpiresAt": dateFormatter.string(from: oauthToken!.refreshTokenExpiredAt),
+//                            "scopes": oauthToken?.scopes!,
+//                        ])
+//
+//                    } catch let e {
+//                        reject("actbase_kakao_sdk", e.localizedDescription, nil)
+//                    }
+//                }
+//            }
+//        }
     }
 
     @objc(logout:rejecter:)
     func logout(_ resolve: @escaping RCTPromiseResolveBlock,
                rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
 
-        DispatchQueue.main.async {
-            UserApi.shared.logout {(error) in
-                do {
-                    if let error = error {
-                        throw error;
-                    }
-                    resolve("SUCCESS")
-                } catch let e {
-                    reject("actbase_kakao_sdk", e.localizedDescription, nil)
-                }
-            }
-        }
+//        DispatchQueue.main.async {
+//            UserApi.shared.logout {(error) in
+//                do {
+//                    if let error = error {
+//                        throw error;
+//                    }
+//                    resolve("SUCCESS")
+//                } catch let e {
+//                    reject("actbase_kakao_sdk", e.localizedDescription, nil)
+//                }
+//            }
+//        }
     }
 
     @objc(unlink:rejecter:)
     func unlink(_ resolve: @escaping RCTPromiseResolveBlock,
                rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
 
-        DispatchQueue.main.async {
-            UserApi.shared.unlink {(error) in
-                do {
-                    if let error = error {
-                        throw error;
-                    }
-                    resolve("SUCCESS")
-                } catch let e {
-                    reject("actbase_kakao_sdk", e.localizedDescription, nil)
-                }
-            }
-        }
+//        DispatchQueue.main.async {
+//            UserApi.shared.unlink {(error) in
+//                do {
+//                    if let error = error {
+//                        throw error;
+//                    }
+//                    resolve("SUCCESS")
+//                } catch let e {
+//                    reject("actbase_kakao_sdk", e.localizedDescription, nil)
+//                }
+//            }
+//        }
     }
 
     @objc(getAccessToken:rejecter:)
     func getAccessToken(_ resolve: @escaping RCTPromiseResolveBlock,
                rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
 
-        DispatchQueue.main.async {
-            UserApi.shared.accessTokenInfo {(accessTokenInfo, error) in
-                do {
-                    if let error = error {
-                        throw error;
-                    }
-                    resolve([
-                        "id": accessTokenInfo?.id,
-                        "expiresIn": accessTokenInfo?.expiresIn
-                    ])
-                } catch let e {
-                    reject("actbase_kakao_sdk", e.localizedDescription, nil)
-                }
-            }
-        }
+//        DispatchQueue.main.async {
+//            UserApi.shared.accessTokenInfo {(accessTokenInfo, error) in
+//                do {
+//                    if let error = error {
+//                        throw error;
+//                    }
+//                    resolve([
+//                        "id": accessTokenInfo?.id,
+//                        "expiresIn": accessTokenInfo?.expiresIn
+//                    ])
+//                } catch let e {
+//                    reject("actbase_kakao_sdk", e.localizedDescription, nil)
+//                }
+//            }
+//        }
     }
 
     @objc(getProfile:rejecter:)
     func getProfile(_ resolve: @escaping RCTPromiseResolveBlock,
                rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
 
-        DispatchQueue.main.async {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss";
-            UserApi.shared.me() {(user, error) in
-                do {
-                    if let error = error {
-                        throw error;
-                    }
-
-                    var map: [String: Any] = [
-                        "id": user!.id as Any,
-                        "connectedAt": dateFormatter.string(from: user!.connectedAt!)
-                    ];
-
-                    var kakaoAccount: [String: Any] = [:]
-                    let origin: Account = user!.kakaoAccount!
-
-                    if (origin.emailNeedsAgreement != nil) {
-                        if (origin.emailNeedsAgreement == false) {
-                            kakaoAccount.updateValue(origin.email ?? "", forKey: "email")
-                        }
-                        kakaoAccount.updateValue(origin.emailNeedsAgreement ?? false, forKey: "emailNeedsAgreement")
-                        kakaoAccount.updateValue(origin.isEmailValid ?? false, forKey: "isEmailValid")
-                        kakaoAccount.updateValue(origin.isEmailVerified ?? false, forKey: "isEmailVerified")
-                    }
-
-                    if (origin.birthdayNeedsAgreement != nil) {
-                        if (origin.birthdayNeedsAgreement == false) {
-                            kakaoAccount.updateValue(origin.birthday ?? "", forKey: "birthday")
-                        }
-                        kakaoAccount.updateValue(origin.birthdayNeedsAgreement ?? false, forKey: "birthdayNeedsAgreement")
-                    }
-
-                    if (origin.birthyearNeedsAgreement != nil) {
-                        if (origin.birthyearNeedsAgreement == false) {
-                            kakaoAccount.updateValue(origin.birthyear, forKey: "birthyear")
-                        }
-                        kakaoAccount.updateValue(origin.birthyearNeedsAgreement, forKey: "birthyearNeedsAgreement")
-                    }
-
-                    if (origin.genderNeedsAgreement != nil) {
-                        if (origin.genderNeedsAgreement == false) {
-                            kakaoAccount.updateValue(origin.gender?.rawValue, forKey: "gender")
-                        }
-                        kakaoAccount.updateValue(origin.genderNeedsAgreement, forKey: "genderNeedsAgreement")
-                    }
-
-                    if (origin.ciNeedsAgreement != nil) {
-                        if (origin.ciNeedsAgreement == false) {
-                            kakaoAccount.updateValue(origin.ci, forKey: "ci")
-                        }
-                        kakaoAccount.updateValue(dateFormatter.string(from: origin.ciAuthenticatedAt!), forKey: "ciAuthenticatedAt")
-                        kakaoAccount.updateValue(origin.ciNeedsAgreement, forKey: "ciNeedsAgreement")
-                    }
-
-                    if (origin.legalBirthDateNeedsAgreement != nil) {
-                        if (origin.legalBirthDateNeedsAgreement == false) {
-                            kakaoAccount.updateValue(origin.legalBirthDate, forKey: "legalBirthDate")
-                        }
-                        kakaoAccount.updateValue(origin.legalBirthDateNeedsAgreement, forKey: "legalBirthDateNeedsAgreement")
-                    }
-
-                    if (origin.legalGenderNeedsAgreement != nil) {
-                        if (origin.legalGenderNeedsAgreement == false) {
-                            kakaoAccount.updateValue(origin.legalGender?.rawValue, forKey: "legalGender")
-                        }
-                        kakaoAccount.updateValue(origin.legalGenderNeedsAgreement, forKey: "legalGenderNeedsAgreement")
-                    }
-
-                    if (origin.legalNameNeedsAgreement != nil) {
-                        if (origin.legalNameNeedsAgreement == false) {
-                            kakaoAccount.updateValue(origin.legalName, forKey: "legalName")
-                        }
-                        kakaoAccount.updateValue(origin.legalNameNeedsAgreement, forKey: "legalNameNeedsAgreement")
-                    }
-
-                    if (origin.ageRangeNeedsAgreement != nil) {
-                        if (origin.ageRangeNeedsAgreement == false) {
-                            kakaoAccount.updateValue(origin.ageRange?.rawValue, forKey: "ageRange")
-                        }
-                        kakaoAccount.updateValue(origin.ageRangeNeedsAgreement, forKey: "ageRangeNeedsAgreement")
-                    }
-
-                    if (origin.phoneNumberNeedsAgreement != nil) {
-                        if (origin.phoneNumberNeedsAgreement == false) {
-                            kakaoAccount.updateValue(origin.phoneNumber, forKey: "phoneNumber")
-                        }
-                        kakaoAccount.updateValue(origin.phoneNumberNeedsAgreement, forKey: "phoneNumberNeedsAgreement")
-                    }
-
-                    if (origin.profileNeedsAgreement != nil) {
-                        if (origin.profileNeedsAgreement == false) {
-                            kakaoAccount.updateValue([
-                                "nickname": origin.profile?.nickname,
-                                "profileImageUrl": origin.profile?.profileImageUrl,
-                                "thumbnailImageUrl": origin.profile?.thumbnailImageUrl,
-                            ], forKey: "profile")
-                        }
-                        kakaoAccount.updateValue(origin.profileNeedsAgreement, forKey: "profileNeedsAgreement")
-                    }
-                    map.updateValue(kakaoAccount, forKey: "kakaoAccount")
-                    map.updateValue(user?.properties, forKey: "properties");
-                    resolve(map)
-                } catch let e {
-                    reject("actbase_kakao_sdk", e.localizedDescription, nil)
-                }
-            }
-        }
+//        DispatchQueue.main.async {
+//            let dateFormatter = DateFormatter()
+//            dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss";
+//            UserApi.shared.me() {(user, error) in
+//                do {
+//                    if let error = error {
+//                        throw error;
+//                    }
+//
+//                    var map: [String: Any] = [
+//                        "id": user!.id as Any,
+//                        "connectedAt": dateFormatter.string(from: user!.connectedAt!)
+//                    ];
+//
+//                    var kakaoAccount: [String: Any] = [:]
+//                    let origin: Account = user!.kakaoAccount!
+//
+//                    if (origin.emailNeedsAgreement != nil) {
+//                        if (origin.emailNeedsAgreement == false) {
+//                            kakaoAccount.updateValue(origin.email ?? "", forKey: "email")
+//                        }
+//                        kakaoAccount.updateValue(origin.emailNeedsAgreement ?? false, forKey: "emailNeedsAgreement")
+//                        kakaoAccount.updateValue(origin.isEmailValid ?? false, forKey: "isEmailValid")
+//                        kakaoAccount.updateValue(origin.isEmailVerified ?? false, forKey: "isEmailVerified")
+//                    }
+//
+//                    if (origin.birthdayNeedsAgreement != nil) {
+//                        if (origin.birthdayNeedsAgreement == false) {
+//                            kakaoAccount.updateValue(origin.birthday ?? "", forKey: "birthday")
+//                        }
+//                        kakaoAccount.updateValue(origin.birthdayNeedsAgreement ?? false, forKey: "birthdayNeedsAgreement")
+//                    }
+//
+//                    if (origin.birthyearNeedsAgreement != nil) {
+//                        if (origin.birthyearNeedsAgreement == false) {
+//                            kakaoAccount.updateValue(origin.birthyear, forKey: "birthyear")
+//                        }
+//                        kakaoAccount.updateValue(origin.birthyearNeedsAgreement, forKey: "birthyearNeedsAgreement")
+//                    }
+//
+//                    if (origin.genderNeedsAgreement != nil) {
+//                        if (origin.genderNeedsAgreement == false) {
+//                            kakaoAccount.updateValue(origin.gender?.rawValue, forKey: "gender")
+//                        }
+//                        kakaoAccount.updateValue(origin.genderNeedsAgreement, forKey: "genderNeedsAgreement")
+//                    }
+//
+//                    if (origin.ciNeedsAgreement != nil) {
+//                        if (origin.ciNeedsAgreement == false) {
+//                            kakaoAccount.updateValue(origin.ci, forKey: "ci")
+//                        }
+//                        kakaoAccount.updateValue(dateFormatter.string(from: origin.ciAuthenticatedAt!), forKey: "ciAuthenticatedAt")
+//                        kakaoAccount.updateValue(origin.ciNeedsAgreement, forKey: "ciNeedsAgreement")
+//                    }
+//
+//                    if (origin.legalBirthDateNeedsAgreement != nil) {
+//                        if (origin.legalBirthDateNeedsAgreement == false) {
+//                            kakaoAccount.updateValue(origin.legalBirthDate, forKey: "legalBirthDate")
+//                        }
+//                        kakaoAccount.updateValue(origin.legalBirthDateNeedsAgreement, forKey: "legalBirthDateNeedsAgreement")
+//                    }
+//
+//                    if (origin.legalGenderNeedsAgreement != nil) {
+//                        if (origin.legalGenderNeedsAgreement == false) {
+//                            kakaoAccount.updateValue(origin.legalGender?.rawValue, forKey: "legalGender")
+//                        }
+//                        kakaoAccount.updateValue(origin.legalGenderNeedsAgreement, forKey: "legalGenderNeedsAgreement")
+//                    }
+//
+//                    if (origin.legalNameNeedsAgreement != nil) {
+//                        if (origin.legalNameNeedsAgreement == false) {
+//                            kakaoAccount.updateValue(origin.legalName, forKey: "legalName")
+//                        }
+//                        kakaoAccount.updateValue(origin.legalNameNeedsAgreement, forKey: "legalNameNeedsAgreement")
+//                    }
+//
+//                    if (origin.ageRangeNeedsAgreement != nil) {
+//                        if (origin.ageRangeNeedsAgreement == false) {
+//                            kakaoAccount.updateValue(origin.ageRange?.rawValue, forKey: "ageRange")
+//                        }
+//                        kakaoAccount.updateValue(origin.ageRangeNeedsAgreement, forKey: "ageRangeNeedsAgreement")
+//                    }
+//
+//                    if (origin.phoneNumberNeedsAgreement != nil) {
+//                        if (origin.phoneNumberNeedsAgreement == false) {
+//                            kakaoAccount.updateValue(origin.phoneNumber, forKey: "phoneNumber")
+//                        }
+//                        kakaoAccount.updateValue(origin.phoneNumberNeedsAgreement, forKey: "phoneNumberNeedsAgreement")
+//                    }
+//
+//                    if (origin.profileNeedsAgreement != nil) {
+//                        if (origin.profileNeedsAgreement == false) {
+//                            kakaoAccount.updateValue([
+//                                "nickname": origin.profile?.nickname,
+//                                "profileImageUrl": origin.profile?.profileImageUrl,
+//                                "thumbnailImageUrl": origin.profile?.thumbnailImageUrl,
+//                            ], forKey: "profile")
+//                        }
+//                        kakaoAccount.updateValue(origin.profileNeedsAgreement, forKey: "profileNeedsAgreement")
+//                    }
+//                    map.updateValue(kakaoAccount, forKey: "kakaoAccount")
+//                    map.updateValue(user?.properties, forKey: "properties");
+//                    resolve(map)
+//                } catch let e {
+//                    reject("actbase_kakao_sdk", e.localizedDescription, nil)
+//                }
+//            }
+//        }
     }
 
-    @objc(openChannel:resolver:rejecter:)
-    func openChannel(_ channelId: String,
+    @objc(channel_addChannel:resolver:rejecter:)
+    func channel_addChannel(_ channelId: String,
                      resolver resolve: @escaping RCTPromiseResolveBlock,
                      rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        var safariViewController : SFSafariViewController = SFSafariViewController(url: TalkApi.shared.makeUrlForAddChannel(channelPublicId:channelId)!)
+        let safariViewController:SFSafariViewController? = SFSafariViewController(url: TalkApi.shared.makeUrlForAddChannel(channelPublicId:channelId)!)
         guard (safariViewController != nil) else { return }
 
         DispatchQueue.main.async {
-            safariViewController.modalTransitionStyle = .crossDissolve
-            safariViewController.modalPresentationStyle = .overCurrentContext
-            UIApplication.shared.keyWindow?.rootViewController?.present(safariViewController, animated: true) {
+            safariViewController?.modalTransitionStyle = .crossDissolve
+            safariViewController?.modalPresentationStyle = .overCurrentContext
+            UIApplication.shared.keyWindow?.rootViewController?.present(safariViewController!, animated: true) {
                 print("카카오톡 채널 추가 연결 페이지 실행 성공")
             }
             resolve(true)
         }
     }
 
-    @objc(openChannelChat:resolver:rejecter:)
-    func openChannelChat(_ channelId: String,
+    @objc(channel_chat:resolver:rejecter:)
+    func channel_chat(_ channelId: String,
                      resolver resolve: @escaping RCTPromiseResolveBlock,
                      rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        var safariViewController : SFSafariViewController = SFSafariViewController(url: TalkApi.shared.makeUrlForChannelChat(channelPublicId:channelId)!)
+        let safariViewController:SFSafariViewController? = SFSafariViewController(url: TalkApi.shared.makeUrlForChannelChat(channelPublicId:channelId)!)
         guard (safariViewController != nil) else { return }
 
         DispatchQueue.main.async {
-            safariViewController.modalTransitionStyle = .crossDissolve
-            safariViewController.modalPresentationStyle = .overCurrentContext
-            UIApplication.shared.keyWindow?.rootViewController?.present(safariViewController, animated: true) {
+            safariViewController?.modalTransitionStyle = .crossDissolve
+            safariViewController?.modalPresentationStyle = .overCurrentContext
+            UIApplication.shared.keyWindow?.rootViewController?.present(safariViewController!, animated: true) {
                 print("Kakao Talk Channel chat 연결 페이지 실행 성공")
             }
             resolve(true)
