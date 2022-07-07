@@ -87,7 +87,7 @@ export interface KakaoSDK {
   getAccessToken: () => Promise<AccessTokenInfo | undefined>;
   getProfile: () => Promise<ProfileType>;
   login: () => Promise<AccessTokenType | undefined>;
-  manualLogin: () => Promise<AccessTokenType | undefined>;
+  manualLogin?: () => Promise<AccessTokenType | undefined>;
   loginWithNewScopes: (scopes: string[]) => Promise<AccessTokenType | undefined>;
   logout: () => Promise<void>;
   unlink: () => Promise<void>;
