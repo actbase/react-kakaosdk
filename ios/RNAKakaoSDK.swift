@@ -15,7 +15,7 @@ import KakaoSDKTalk
 @objc(RNAKakaoSDK)
 public class RNAKakaoSDK: NSObject {
 
-    fileprivate var inited = false;
+    fileprivate static var inited = false;
 
     @objc
     static func requiresMainQueueSetup() -> Bool {
