@@ -38,16 +38,22 @@ public class RNAKakaoSDK: NSObject {
         return dict;
     }
 
+    @objc(initSDK:)
+    public static func initSDK(_ appKey: String) -> Void {
+        KakaoSDKCommon.initSDK(appKey: appKey)
+        RNAKakaoSDK.inited = true
+    }
+
     @objc(init:)
     func sdkinit(_ appKey: String) -> Void {
         KakaoSDKCommon.initSDK(appKey: appKey)
-        inited = true
+        RNAKakaoSDK.inited = true
     }
 
     @objc(isInitialized:rejecter:)
     func isInitialized(_ resolve: @escaping RCTPromiseResolveBlock,
                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        resolve(inited);
+        resolve(RNAKakaoSDK.inited);
     }
 
     @objc(login:rejecter:)

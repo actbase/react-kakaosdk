@@ -3,6 +3,10 @@
 
 @implementation WithKakaoSDK
 
++ (void)initSDK:(NSString *)appKey {
+    [RNAKakaoSDK initSDK: appKey];
+}
+
 + (BOOL)isKakaoTalkLoginUrl:(NSURL *)url {
     return [RNAKakaoSDK isKakaoTalkLoginUrl: url];
 }
