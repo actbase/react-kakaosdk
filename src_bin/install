@@ -168,9 +168,14 @@ const start = async () => {
 
     {
       console.log('3. AppDelegate.m 설정');
-      let adf = await readFile(path + `/ios/${name}/AppDelegate.m`);
-      if (adf.indexOf('WithKakaoSDK.h') < 0) {
-        adf = '#import "WithKakaoSDK.h"\n' + adf;
+      let adf;
+      let extension = 'm';
+
+      try {
+        adf = await readFile(path + `/ios/${name}/AppDelegate.m`);
+      } catch {
+        adf = await readFile(path + `/ios/${name}/AppDelegate.mm`);
+        extension = 'mm';
       }
 
       if (adf.indexOf('[WithKakaoSDK isKakaoTalkLoginUrl:url]') < 0) {
