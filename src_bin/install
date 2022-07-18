@@ -203,7 +203,7 @@ const start = async () => {
 `;
           const sf = adf.substring(adf.lastIndexOf('@'));
           adf = pf + cx + sf;
-          await writeFile(path + `/ios/${name}/AppDelegate.m`, adf);
+          await writeFile(path + `/ios/${name}/AppDelegate.${extension}`, adf);
         }
       }
 
