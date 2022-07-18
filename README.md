@@ -70,7 +70,9 @@ options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
 ...
 
-++ if ([WithKakaoSDK isKakaoTalkLoginUrl:url]) return [WithKakaoSDK handleOpenUrl:url];
+++ NSString *appKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"KAKAO_APP_KEY"];
+[WithKakaoSDK initSDK: appKey];
+if ([WithKakaoSDK isKakaoTalkLoginUrl:url]) return [WithKakaoSDK handleOpenUrl:url];
 [[FBSDKApplicationDelegate sharedInstance] application:app
 openURL:url
 options:options];

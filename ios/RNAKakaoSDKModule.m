@@ -2,6 +2,7 @@
 #import "RNAKakaoSDKModule.h"
 
 @interface RCT_EXTERN_MODULE(RNAKakaoSDK, NSObject)
+RCT_EXTERN_METHOD(initSDK:(NSString *)appKey);
 RCT_EXTERN_METHOD(init:(NSString *)appKey);
 RCT_EXTERN_METHOD(isInitialized:(RCTPromiseResolveBlock *)resolve rejecter:(RCTPromiseRejectBlock *)reject);
 RCT_EXTERN_METHOD(login:(RCTPromiseResolveBlock *)resolve rejecter:(RCTPromiseRejectBlock *)reject);
