@@ -3,7 +3,7 @@
   "bin": {
     "install": "./bin/install"
   },
-  "version": "0.9.19",
+  "version": "0.9.20",
   "description": "KakaoSDK for React, ReactNative ",
   "main": "lib/index.js",
   "module": "lib/index.js",
